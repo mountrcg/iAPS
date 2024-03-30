@@ -41,10 +41,10 @@ struct PumpView: View {
     var body: some View {
         HStack(alignment: .lastTextBaseline) {
 //            Text("COB").font(.caption2).foregroundColor(.secondary)
-            Image("premeal")
+            Image(systemName: "fork.knife.circle.fill")
                 .renderingMode(.template)
                 .resizable()
-                .frame(width: 12, height: 12)
+                .frame(width: 18, height: 18)
                 .foregroundColor(.loopYellow)
             Text(
                 numberFormatter
@@ -61,10 +61,10 @@ struct PumpView: View {
 //                .resizable()
 //                .frame(width: 12, height: 12)
 //                .foregroundColor(.insulin)
-            Image(systemName: "drop.circle")
+            Image(systemName: "drop.circle.fill")
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxHeight: 12)
+                .frame(maxHeight: 18)
                 .foregroundColor(Color.insulin)
             Text(
                 numberFormatter
@@ -75,20 +75,22 @@ struct PumpView: View {
 
             Spacer()
 
-            Text("ISF").font(.caption2).foregroundColor(.secondary)
-            Text(
-                numberFormatter.string(from: (state.suggestion?.isf ?? 0) as NSNumber) ?? "0"
-            )
-            .font(.callout).fontWeight(.bold)
+            Text("ISF")
+                .font(.system(size: 16)) // Change to a larger font style like .headline
+                .foregroundColor(.secondary)
+
+            Text(numberFormatter.string(from: (state.suggestion?.isf ?? 0) as NSNumber) ?? "0")
+                .font(.system(size: 16)) // Change to a larger font style like .title
+                .fontWeight(.bold)
 
             Spacer()
 
             if let reservoir = reservoir {
                 HStack {
-                    Image(systemName: "drop.fill")
+                    Image(systemName: "fuelpump.circle.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 12)
+                        .frame(maxHeight: 18)
                         .foregroundColor(reservoirColor)
                     if reservoir == 0xDEAD_BEEF {
                         Text("50+ " + NSLocalizedString("U", comment: "Insulin unit")).font(.callout).fontWeight(.bold)
@@ -103,7 +105,7 @@ struct PumpView: View {
 
                 if let timeZone = timeZone, timeZone.secondsFromGMT() != TimeZone.current.secondsFromGMT() {
                     Image(systemName: "clock.badge.exclamationmark.fill")
-                        .font(.system(size: 15))
+                        .font(.system(size: 18))
                         .symbolRenderingMode(.palette)
                         .foregroundStyle(.red, Color(.warning))
                 }
@@ -116,7 +118,7 @@ struct PumpView: View {
                     Image(systemName: "battery.100")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 12)
+                        .frame(maxHeight: 18)
                         .foregroundColor(batteryColor)
                     Text("\(Int(battery.percent ?? 100)) %").font(.callout)
                         .fontWeight(.bold)
@@ -128,7 +130,7 @@ struct PumpView: View {
                     Image(systemName: "stopwatch.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(maxHeight: 12)
+                        .frame(maxHeight: 18)
                         .foregroundColor(timerColor)
                     Text(remainingTimeString(time: date.timeIntervalSince(timerDate))).font(.callout).fontWeight(.bold)
                 }
