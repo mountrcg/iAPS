@@ -523,10 +523,10 @@ extension Home {
                     Button { state.showModal(for: .addCarbs(editMode: false, override: false)) }
                     label: {
                         ZStack(alignment: Alignment(horizontal: .trailing, vertical: .bottom)) {
-                            Image("carbs1")
+                            Image(systemName: "fork.knife.circle.fill")
                                 .renderingMode(.template)
                                 .resizable()
-                                .frame(width: 30, height: 30)
+                                .frame(width: 24, height: 24)
 //                                .foregroundColor(.loopYellow)
                                 .padding(8)
                             if let carbsReq = state.carbsRequired {
@@ -548,10 +548,10 @@ extension Home {
                         ))
                     }
                     label: {
-                        Image("bolus")
+                        Image(systemName: "drop.circle.fill")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 30, height: 30)
+                            .frame(width: 24, height: 24)
 //                            .foregroundColor(.insulin)
                             .padding(8)
                     }
@@ -560,10 +560,10 @@ extension Home {
                     Spacer()
                     Button { state.showModal(for: .addTempTarget) }
                     label: {
-                        Image("target1")
+                        Image(systemName: "person.crop.circle.fill.badge.checkmark")
                             .renderingMode(.template)
                             .resizable()
-                            .frame(width: 30, height: 30)
+                            .frame(width: 24, height: 24)
 //                            .foregroundColor(.loopGreen)
                             .padding(8)
                     }
@@ -573,11 +573,11 @@ extension Home {
                     if state.allowManualTemp {
                         Button { state.showModal(for: .manualTempBasal) }
                         label: {
-                            Image("bolus1")
+                            Image(systemName: "syringe.fill")
                                 .renderingMode(.template)
                                 .resizable()
 //                                .foregroundColor(.basal)
-                                .frame(width: 30, height: 30)
+                                .frame(width: 24, height: 24)
                                 .padding(8)
                         }
                         .foregroundColor(colorIcon)
@@ -597,10 +597,10 @@ extension Home {
 //                    .buttonStyle(.borderless)
 //                    Spacer()
 
-                    Image("statistics")
+                    Image(systemName: "chart.line.uptrend.xyaxis.circle.fill")
                         .renderingMode(.template)
                         .resizable()
-                        .frame(width: 30, height: 30)
+                        .frame(width: 24, height: 24)
                         .padding(8)
 //                        .foregroundColor(.uam)
                         .onTapGesture { state.showModal(for: .statistics) }
@@ -615,11 +615,11 @@ extension Home {
                     Spacer()
                     Button { state.showModal(for: .settings) }
                     label: {
-                        Image("settings")
+                        Image(systemName: "gear.circle.fill")
                             .renderingMode(.template)
                             .resizable()
 //                                .foregroundColor(.secondary)
-                            .frame(width: 30, height: 30)
+                            .frame(width: 24, height: 24)
                             .padding(8)
                     }
                     .foregroundColor(colorIcon)
