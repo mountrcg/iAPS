@@ -116,13 +116,22 @@ Refers to iAPS, which is currently mainly improved by Jon & Pierre at this [gith
 I had to disable Overrides/Profiles from the original iAPS, as Jon does not publish the necessary oref code - you would have to use the original if you need it.
 Also note that you can achieve almost everything that Profiles do with the Advanced TempTarget and thenecessary settings in preferences.  However, Profiles are a cool feature and easier to handle, just not here in this branch.
 
+* 3.6.2
+	* Split out Preferences for AIMI B30
+	* Contact Trick improvements by [Yurique](https://github.com/Yurique/)
+	* more and revamped Shortcuts by [@avouspierre](https://github.com/avouspierre/)
+	You can now check your alarms with shortcuts and automations (I do that at 1:00am) and set a TempTarget in the future - all offline. Love it for automating Morning Runs.
+	* looping indicator with [@ABloodyDiabetic](https://github.com/ABloodyDiabetic/)
+	* re-instate Apple watch app with TDD
+	* harmonize CGM and Pump config view
+	* latest bugs fixed by Jon
 * 3.6 - will resett all oref1 & autoISF settings to default values
     * DANA RS and -i integration by [@bastiaanv](https://github.com/bastiaanv/iAPS)
 	* KetoProtection
 		* with a percentage or absolute small basal rate
 		* always or depending on IOB and Insulin activity
 	* more shortcut and refactoring by avouspierre
-	* ContactTrick for AppleWatch by yurique
+	* ContactTrick for AppleWatch by [Yurique](https://github.com/Yurique/)
 	* oref fixes
 * 3.3
 	* get on par with stock iAPS (Jon keeps still cranking out great features) re.
