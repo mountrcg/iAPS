@@ -25,50 +25,52 @@ extension PumpConfig {
         }
 
         var body: some View {
-            Form {
-                Section(header: Text("Model")) {
-                    if let pumpState = state.pumpState {
-                        Button {
-                            state.setupPump = true
-                        } label: {
-                            HStack {
-                                Image(uiImage: pumpState.image ?? UIImage()).padding()
-                                Text(pumpState.name)
+            NavigationView {
+                Form {
+                    Section(header: Text("Model")) {
+                        if let pumpState = state.pumpState {
+                            Button {
+                                state.setupPump = true
+                            } label: {
+                                HStack {
+                                    Image(uiImage: pumpState.image ?? UIImage()).padding()
+                                    Text(pumpState.name)
+                                }
                             }
+                            if state.alertNotAck {
+                                Spacer()
+                                Button("Acknowledge all alerts") { state.ack() }
+                            }
+                        } else {
+                            Button("Add Dana-i/RS") { state.addPump(.dana) }
+                            Button("Add Omnipod Eros") { state.addPump(.omnipod) }
+                            Button("Add Omnipod Dash") { state.addPump(.omnipodBLE) }
+                            Button("Add Medtronic") { state.addPump(.minimed) }
+                            Button("Add Simulator") { state.addPump(.simulator) }
                         }
-                        if state.alertNotAck {
-                            Spacer()
-                            Button("Acknowledge all alerts") { state.ack() }
-                        }
-                    } else {
-                        Button("Add Medtronic") { state.addPump(.minimed) }
-                        Button("Add Omnipod") { state.addPump(.omnipod) }
-                        Button("Add Omnipod Dash") { state.addPump(.omnipodBLE) }
-                        Button("Add Dana-i/RS") { state.addPump(.dana) }
-                        Button("Add Simulator") { state.addPump(.simulator) }
                     }
                 }
-            }
-            .scrollContentBackground(.hidden).background(color)
-            .onAppear(perform: configureView)
-            .navigationTitle("Pump config")
-            .navigationBarTitleDisplayMode(.automatic)
-            .sheet(isPresented: $state.setupPump) {
-                if let pumpManager = state.provider.apsManager.pumpManager {
-                    PumpSettingsView(
-                        pumpManager: pumpManager,
-                        bluetoothManager: state.provider.apsManager.bluetoothManager!,
-                        completionDelegate: state,
-                        setupDelegate: state
-                    )
-                } else {
-                    PumpSetupView(
-                        pumpType: state.setupPumpType,
-                        pumpInitialSettings: state.initialSettings,
-                        bluetoothManager: state.provider.apsManager.bluetoothManager!,
-                        completionDelegate: state,
-                        setupDelegate: state
-                    )
+                .scrollContentBackground(.hidden).background(color)
+                .onAppear(perform: configureView)
+                .navigationTitle("Pump config")
+                .navigationBarTitleDisplayMode(.automatic)
+                .sheet(isPresented: $state.setupPump) {
+                    if let pumpManager = state.provider.apsManager.pumpManager {
+                        PumpSettingsView(
+                            pumpManager: pumpManager,
+                            bluetoothManager: state.provider.apsManager.bluetoothManager!,
+                            completionDelegate: state,
+                            setupDelegate: state
+                        )
+                    } else {
+                        PumpSetupView(
+                            pumpType: state.setupPumpType,
+                            pumpInitialSettings: state.initialSettings,
+                            bluetoothManager: state.provider.apsManager.bluetoothManager!,
+                            completionDelegate: state,
+                            setupDelegate: state
+                        )
+                    }
                 }
             }
         }

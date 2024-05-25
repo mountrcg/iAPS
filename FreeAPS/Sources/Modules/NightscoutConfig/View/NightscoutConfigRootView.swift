@@ -74,7 +74,7 @@ extension NightscoutConfig {
                 }
 
                 Section {
-                    Button("Open Nighstcout") {
+                    Button("Open Nightscout") {
                         UIApplication.shared.open(URL(string: state.url)!, options: [:], completionHandler: nil)
                     }
                     .disabled(state.url.isEmpty || state.connecting)
@@ -85,6 +85,7 @@ extension NightscoutConfig {
                     if state.isUploadEnabled {
                         Toggle("Statistics", isOn: $state.uploadStats)
                         Toggle("Glucose", isOn: $state.uploadGlucose)
+//                            .disabled(!state.changeUploadGlucose)
                     }
                 } header: {
                     Text("Allow Uploads")

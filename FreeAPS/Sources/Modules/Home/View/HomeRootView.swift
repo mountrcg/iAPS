@@ -145,7 +145,8 @@ extension Home {
                 units: $state.units,
                 alarm: $state.alarm,
                 lowGlucose: $state.lowGlucose,
-                highGlucose: $state.highGlucose
+                highGlucose: $state.highGlucose,
+                cgmAvailable: $state.cgmAvailable
             )
             .onTapGesture {
                 state.openCGM()

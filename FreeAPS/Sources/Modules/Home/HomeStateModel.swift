@@ -10,6 +10,8 @@ extension Home {
         @Injected() var apsManager: APSManager!
         @Injected() var nightscoutManager: NightscoutManager!
         @Injected() var storage: TempTargetsStorage!
+        @Injected() var fetchGlucoseManager: FetchGlucoseManager!
+
         private let timer = DispatchTimer(timeInterval: 5)
         private(set) var filteredHours = 24
         @Published var glucose: [BloodGlucose] = []
@@ -75,6 +77,7 @@ extension Home {
         @Published var alwaysUseColors: Bool = true
         @Published var timeSettings: Bool = true
         @Published var calculatedTins: String = ""
+        @Published var cgmAvailable: Bool = false
 
         private var numberFormatter: NumberFormatter {
             let formatter = NumberFormatter()
@@ -299,6 +302,7 @@ extension Home {
                     self.glucoseDelta = nil
                 }
                 self.alarm = self.provider.glucoseStorage.alarm
+                cgmAvailable = (fetchGlucoseManager.cgmGlucoseSourceType != CGMType.none)
             }
         }
 
@@ -516,7 +520,7 @@ extension Home {
         }
 
         func openCGM() {
-            showModal(for: .cgmDirect)
+            router.mainSecondaryModalView.send(router.view(for: .cgmDirect))
         }
 
         func infoPanelTTPercentage(_ hbt_: Double, _ target: Decimal) -> Decimal {

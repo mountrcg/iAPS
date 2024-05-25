@@ -49,6 +49,7 @@ import Swinject
         if #available(iOS 16.2, *) {
             _ = resolver.resolve(LiveActivityBridge.self)!
         }
+        _ = resolver.resolve(PluginManager.self)!
     }
 
     init() {

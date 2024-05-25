@@ -1,6 +1,5 @@
 import Algorithms
 import Combine
-import DanaKit
 import Foundation
 import LoopKit
 import LoopKitUI
@@ -8,7 +7,6 @@ import MinimedKit
 import MockKit
 import OmniBLE
 import OmniKit
-import os.log
 import ShareClient
 import SwiftDate
 import Swinject
@@ -35,16 +33,14 @@ private let staticPumpManagers: [PumpManagerUI.Type] = [
     MinimedPumpManager.self,
     OmnipodPumpManager.self,
     OmniBLEPumpManager.self,
-    DanaKitPumpManager.self,
     MockPumpManager.self
 ]
 
 private let staticPumpManagersByIdentifier: [String: PumpManagerUI.Type] = [
-    MinimedPumpManager.managerIdentifier: MinimedPumpManager.self,
-    OmnipodPumpManager.managerIdentifier: OmnipodPumpManager.self,
-    OmniBLEPumpManager.managerIdentifier: OmniBLEPumpManager.self,
-    DanaKitPumpManager.managerIdentifier: DanaKitPumpManager.self,
-    MockPumpManager.managerIdentifier: MockPumpManager.self
+    MinimedPumpManager.pluginIdentifier: MinimedPumpManager.self,
+    OmnipodPumpManager.pluginIdentifier: OmnipodPumpManager.self,
+    OmniBLEPumpManager.pluginIdentifier: OmniBLEPumpManager.self,
+    MockPumpManager.pluginIdentifier: MockPumpManager.self
 ]
 
 // private let staticPumpManagersByIdentifier: [String: PumpManagerUI.Type] = staticPumpManagers.reduce(into: [:]) { map, Type in
@@ -297,6 +293,18 @@ final class BaseDeviceDataManager: DeviceDataManager, Injectable {
 // MARK: - PumpManagerDelegate
 
 extension BaseDeviceDataManager: PumpManagerDelegate {
+    var automaticDosingEnabled: Bool {
+        settingsManager.settings.closedLoop // Take if close or open loop
+    }
+
+    func pumpManager(
+        _: LoopKit.PumpManager,
+        didRequestBasalRateScheduleChange _: LoopKit.BasalRateSchedule,
+        completion _: @escaping (Error?) -> Void
+    ) {
+        debug(.deviceManager, "pumpManagerBasalRateChange")
+    }
+
     func pumpManagerPumpWasReplaced(_: PumpManager) {
         debug(.deviceManager, "pumpManagerPumpWasReplaced")
     }
@@ -440,6 +448,7 @@ extension BaseDeviceDataManager: PumpManagerDelegate {
         _: PumpManager,
         hasNewPumpEvents events: [NewPumpEvent],
         lastReconciliation _: Date?,
+        replacePendingEvents _: Bool,
         completion: @escaping (_ error: Error?) -> Void
     ) {
         dispatchPrecondition(condition: .onQueue(processQueue))
@@ -579,6 +588,8 @@ extension BaseDeviceDataManager: CGMManagerDelegate {
     }
 
     func cgmManager(_: CGMManager, hasNew _: CGMReadingResult) {}
+
+    func cgmManager(_: LoopKit.CGMManager, hasNew _: [LoopKit.PersistedCgmEvent]) {}
 
     func cgmManagerWantsDeletion(_: CGMManager) {}
 

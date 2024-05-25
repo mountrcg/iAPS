@@ -11,6 +11,7 @@
   "skipBolusScreenAfterCarbs" : false,
   "displayHR" : false,
   "cgm" : "nightscout",
+  "cgmManagerTypeByIdentifier":"",
   "uploadGlucose" : true,
   "useCalendar" : false,
   "displayCalendarEmojis" : false,

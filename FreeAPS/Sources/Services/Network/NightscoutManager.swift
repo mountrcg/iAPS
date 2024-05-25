@@ -143,7 +143,6 @@ final class BaseNightscoutManager: NightscoutManager, Injectable {
 
     var glucoseManager: FetchGlucoseManager?
     var cgmManager: CGMManagerUI?
-    var cgmType: CGMType = .nightscout
 
     func fetch(_: DispatchTimer?) -> AnyPublisher<[BloodGlucose], Never> {
         fetchGlucose(since: glucoseStorage.syncDate())

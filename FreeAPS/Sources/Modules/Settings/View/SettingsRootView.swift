@@ -1,4 +1,6 @@
 import HealthKit
+import LoopKit
+import LoopKitUI
 import SwiftUI
 import Swinject
 
@@ -64,6 +66,10 @@ extension Settings {
                     Text("UI/UX Settings").navigationLink(to: .statisticsConfig, from: self)
                     Text("Bolus Calculator").navigationLink(to: .bolusCalculatorConfig, from: self)
                     Text("Nightscout").navigationLink(to: .nighscoutConfig, from: self)
+
+                    NavigationLink(destination: TidepoolStartView(state: state)) {
+                        Text("Tidepool")
+                    }
                     if HKHealthStore.isHealthDataAvailable() {
                         Text("Apple Health").navigationLink(to: .healthkit, from: self)
                     }
@@ -174,10 +180,8 @@ extension Settings {
                         }
                 }
             }
-            .sheet(isPresented: $showShareSheet) {
-                ShareSheet(activityItems: state.logItems())
-            }
             .scrollContentBackground(.hidden).background(color)
+            .sheet(isPresented: $showShareSheet) { ShareSheet(activityItems: state.logItems()) }
             .onAppear(perform: configureView)
             .navigationTitle("Settings")
             .toolbar {

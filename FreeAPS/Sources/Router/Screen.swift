@@ -24,8 +24,6 @@ enum Screen: Identifiable, Hashable {
     case cgm
     case cgmDirect
     case healthkit
-    case libreConfig
-    case calibrations
     case notificationsConfig
     case fpuConfig
     case iconConfig
@@ -40,6 +38,7 @@ enum Screen: Identifiable, Hashable {
     case autoISFConf
     case B30Conf
     case KetoConfig
+    case calibrations
 
     case contactTrick
     var id: Int { String(reflecting: self).hashValue }
@@ -92,10 +91,6 @@ extension Screen {
             CGM.RootView(resolver: resolver, displayClose: true)
         case .healthkit:
             AppleHealthKit.RootView(resolver: resolver)
-        case .libreConfig:
-            LibreConfig.RootView(resolver: resolver)
-        case .calibrations:
-            Calibrations.RootView(resolver: resolver)
         case .notificationsConfig:
             NotificationsConfig.RootView(resolver: resolver)
         case .fpuConfig:
@@ -126,6 +121,8 @@ extension Screen {
             KetoConf.RootView(resolver: resolver)
         case .contactTrick:
             ContactTrick.RootView(resolver: resolver)
+        case .calibrations:
+            Calibrations.RootView(resolver: resolver)
         }
     }
 
