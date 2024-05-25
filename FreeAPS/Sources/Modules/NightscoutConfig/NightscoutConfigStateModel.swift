@@ -24,7 +24,7 @@ extension NightscoutConfig {
         @Published var isUploadEnabled = false // Allow uploads
         @Published var uploadStats = false // Upload Statistics
         @Published var uploadGlucose = true // Upload Glucose
-        @Published var changeUploadGlucose = true // if plugin, need to be change in CGM configuration
+//        @Published var changeUploadGlucose = true // if plugin, need to be change in CGM configuration
         @Published var useLocalSource = false
         @Published var localPort: Decimal = 0
         @Published var units: GlucoseUnits = .mmolL
@@ -40,7 +40,7 @@ extension NightscoutConfig {
             dia = settingsManager.pumpSettings.insulinActionCurve
             maxBasal = settingsManager.pumpSettings.maxBasal
             maxBolus = settingsManager.pumpSettings.maxBolus
-            changeUploadGlucose = (cgmManager.cgmGlucoseSourceType != CGMType.plugin)
+//            changeUploadGlucose = (cgmManager.cgmGlucoseSourceType != CGMType.plugin)
 
             subscribeSetting(\.allowAnnouncements, on: $allowAnnouncements) { allowAnnouncements = $0 }
             subscribeSetting(\.isUploadEnabled, on: $isUploadEnabled) { isUploadEnabled = $0 }

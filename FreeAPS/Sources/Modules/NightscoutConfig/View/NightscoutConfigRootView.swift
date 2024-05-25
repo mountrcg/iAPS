@@ -84,7 +84,8 @@ extension NightscoutConfig {
                     Toggle("Upload", isOn: $state.isUploadEnabled)
                     if state.isUploadEnabled {
                         Toggle("Statistics", isOn: $state.uploadStats)
-                        Toggle("Glucose", isOn: $state.uploadGlucose).disabled(!state.changeUploadGlucose)
+                        Toggle("Glucose", isOn: $state.uploadGlucose)
+//                            .disabled(!state.changeUploadGlucose)
                     }
                 } header: {
                     Text("Allow Uploads")
