@@ -83,6 +83,17 @@ struct PumpView: View {
 
             Spacer()
 
+            if reservoir == nil && battery == nil {
+                HStack { // no cgm defined so display a generic CGM
+                    Text("Add Pump")
+                        .font(.callout)
+                    Image(systemName: "keyboard.onehanded.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxHeight: 12)
+                }
+            }
+
             if let reservoir = reservoir {
                 HStack {
                     Image(systemName: "drop.fill")

@@ -169,9 +169,7 @@ extension Home {
                 state: state
             )
             .onTapGesture {
-                if state.pumpDisplayState != nil {
-                    state.setupPump = true
-                }
+                state.setupPump = true
             }
         }
 
