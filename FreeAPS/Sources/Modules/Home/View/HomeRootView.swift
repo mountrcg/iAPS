@@ -214,9 +214,10 @@ extension Home {
             guard let tempTarget = state.tempTarget else {
                 return nil
             }
-            let target = tempTarget.targetBottom ?? 0
-            let unitString = targetFormatter.string(from: (tempTarget.targetBottom?.asMmolL ?? 0) as NSNumber) ?? ""
-            let rawString = (tirFormatter.string(from: (tempTarget.targetBottom ?? 0) as NSNumber) ?? "") + " " + state.units
+            let targetSet = tempTarget.targetBottom ?? 0
+            let target = state.suggestion?.current_target ?? 0
+            let unitString = targetFormatter.string(from: target.asMmolL as NSNumber) ?? ""
+            let rawString = (tirFormatter.string(from: target as NSNumber) ?? "") + " " + state.units
                 .rawValue
 
             var string = ""
@@ -225,8 +226,11 @@ extension Home {
                 string = ", " + (tirFormatter.string(from: state.infoPanelTTPercentage(hbt, target) as NSNumber) ?? "") + " %"
             }
 
-            let percentString = state
+            var percentString = state
                 .units == .mmolL ? (unitString + " mmol/L" + string) : (rawString + (string == "0" ? "" : string))
+            if targetSet < 80 {
+                percentString = percentString + "‼️"
+            }
             return tempTarget.displayName + " " + percentString
         }
 
@@ -708,7 +712,7 @@ extension Home {
                         glucoseView
                         if let eventualBG = state.eventualBG {
                             Text(
-                                "⇢ " + numberFormatter.string(
+                                "⇢ " + targetFormatter.string(
                                     from: (
                                         state.units == .mmolL ? eventualBG
                                             .asMmolL : Decimal(eventualBG)

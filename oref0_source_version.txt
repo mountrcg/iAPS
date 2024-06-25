@@ -1,7 +1,10 @@
-oref0 branch: dev-autoISF - git version: 1cbad75
+oref0 branch: dev-autoISF - git version: 1d09f72
 
 Last commits:
-1cbad75 introduce absolute keto safety TBR
+1d09f72 fix insulinForManualBolus
+9b95411 rT.variables in mg/dL
+264e46d faster glucose_get_last
+d041dae introduce absolute keto safety TBR
 260b0c2 more rT's into check  setTempBasal
 f8419a4 KetoProtect
 24dada3 fix avgDelta data mgmt.
@@ -28,6 +31,3 @@ b858dd9 take out old absolute IOB Threshold check
 67038fc fix IOB Threshold logic
 fa4a448 middleware into popup
 01b1d6c iobTH fixes and autosens toggle
-54f6401 tags for early autoISF exit with bg_ISF < 1
-58bbf5c keep maxDelta_threshold
-6eafd34 autoISF 3.0
