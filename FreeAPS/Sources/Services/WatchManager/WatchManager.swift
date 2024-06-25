@@ -164,6 +164,8 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             self.state.eventualBGRaw = eBG
 
             self.state.isf = self.suggestion?.isf
+            let isfIsString = self.isfAsString()
+            self.state.isfString = isfIsString
 
             let overrideArray = overrideStorage.fetchLatestOverride()
 
@@ -242,6 +244,16 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
         let units = settingsManager.settings.units
         return eventualFormatter.string(
             from: (units == .mmolL ? eventualBG.asMmolL : Decimal(eventualBG)) as NSNumber
+        )!
+    }
+
+    private func isfAsString() -> String? {
+        guard let isfValue = state.isf else {
+            return nil
+        }
+        let units = settingsManager.settings.units
+        return glucoseFormatter.string(
+            from: (units == .mmolL ? isfValue.asMmolL : isfValue) as NSNumber
         )!
     }
 
@@ -365,7 +377,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
     private var eventualFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
-        formatter.maximumFractionDigits = 2
+        formatter.maximumFractionDigits = 1
         return formatter
     }
 

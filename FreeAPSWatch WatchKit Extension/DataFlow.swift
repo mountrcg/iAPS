@@ -30,6 +30,7 @@ struct WatchState: Codable {
     var profilesOrTempTargets: Bool?
     var useNewCalc: Bool?
     var isf: Decimal?
+    var isfString: String?
     var override: String?
 }
 

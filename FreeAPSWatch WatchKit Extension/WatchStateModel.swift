@@ -63,6 +63,7 @@ class WatchStateModel: NSObject, ObservableObject {
     @Published var timerDate = Date()
     @Published var pendingBolus: Double?
     @Published var isf: Decimal?
+    @Published var isfString: String?
     @Published var override: String?
 
     private var lifetime = Set<AnyCancellable>()
@@ -202,6 +203,7 @@ class WatchStateModel: NSObject, ObservableObject {
         profilesOrTempTargets = state.profilesOrTempTargets ?? true
         useNewCalc = state.useNewCalc ?? false
         isf = state.isf
+        isfString = state.isfString
         override = state.override
     }
 }

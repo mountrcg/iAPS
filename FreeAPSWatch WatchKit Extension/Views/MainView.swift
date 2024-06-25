@@ -195,20 +195,21 @@ struct MainView: View {
                             .minimumScaleFactor(0.5)
                     }
                 case .isf:
-                    Spacer()
-                    let isf: String = state.isf != nil ? "\(state.isf ?? 0)" : "-"
-                    HStack {
-                        Image(systemName: "arrow.up.arrow.down")
-                            .renderingMode(.template)
-                            .resizable()
-                            .frame(width: 13, height: 13)
-                            .foregroundColor(.loopGreen)
-                        Text("\(isf)")
-                            .fontWeight(.regular)
-                            .font(.caption2)
-                            .scaledToFill()
-                            .foregroundColor(.white)
-                            .minimumScaleFactor(0.5)
+                    if let isfString = state.isfString?.nonEmpty {
+                        Spacer()
+                        HStack {
+                            Image(systemName: "arrow.up.arrow.down")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 13, height: 13)
+                                .foregroundColor(.loopGreen)
+                            Text(isfString)
+                                .fontWeight(.regular)
+                                .font(.caption2)
+                                .scaledToFill()
+                                .foregroundColor(.white)
+                                .minimumScaleFactor(0.5)
+                        }
                     }
                 case .override:
                     Spacer()
