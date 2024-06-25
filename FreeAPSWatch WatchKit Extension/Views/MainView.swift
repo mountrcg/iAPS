@@ -174,10 +174,15 @@ struct MainView: View {
                         }
                     }
                 case .BGTarget:
-                    if let eventualBG = state.eventualBG.nonEmpty {
+                    if let targetString = state.targetString?.nonEmpty {
                         Spacer()
                         HStack {
-                            Text(eventualBG)
+                            Image(systemName: "scope")
+                                .renderingMode(.template)
+                                .resizable()
+                                .frame(width: 13, height: 13)
+                                .foregroundColor(.loopGreen)
+                            Text(targetString)
                                 .font(.caption2)
                                 .scaledToFill()
                                 .foregroundColor(.secondary)

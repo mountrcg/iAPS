@@ -12,7 +12,7 @@ enum AwConfig: String, JSON, CaseIterable, Identifiable, Codable {
     var displayName: String {
         switch self {
         case .BGTarget:
-            return NSLocalizedString("Eventual BG", comment: "")
+            return NSLocalizedString("Target BG", comment: "")
         case .HR:
             return NSLocalizedString("Heart Rate", comment: "")
         case .steps:

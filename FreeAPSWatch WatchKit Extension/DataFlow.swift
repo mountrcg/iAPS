@@ -31,6 +31,8 @@ struct WatchState: Codable {
     var useNewCalc: Bool?
     var isf: Decimal?
     var isfString: String?
+    var target: Decimal?
+    var targetString: String?
     var override: String?
 }
 

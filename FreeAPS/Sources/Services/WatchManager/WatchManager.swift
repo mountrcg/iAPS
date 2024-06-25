@@ -167,6 +167,10 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             let isfIsString = self.isfAsString()
             self.state.isfString = isfIsString
 
+            self.state.target = self.suggestion?.current_target
+            let targetIsString = self.targetAsString()
+            self.state.targetString = targetIsString
+
             let overrideArray = overrideStorage.fetchLatestOverride()
 
             if overrideArray.first?.enabled ?? false {
@@ -257,6 +261,16 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
         )!
     }
 
+    private func targetAsString() -> String? {
+        guard let targetValue = state.target else {
+            return nil
+        }
+        let units = settingsManager.settings.units
+        return glucoseFormatter.string(
+            from: (units == .mmolL ? targetValue.asMmolL : targetValue) as NSNumber
+        )!
+    }
+
     private func convertTrendToDirectionText(trend: String) -> String {
         switch trend {
         case "↑↑↑":
@@ -289,7 +303,7 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
             conversion = 0.0555
         }
         let isf = state.isf ?? 0
-        let target = suggestion?.current_target ?? 0
+        let target = state.target ?? 0
         let carbratio = suggestion?.carbRatio ?? 0
         let bg = delta.first?.glucose ?? 0
         let cob = state.cob ?? 0
