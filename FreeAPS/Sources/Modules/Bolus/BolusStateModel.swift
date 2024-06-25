@@ -121,7 +121,7 @@ extension Bolus {
 //            targetDifference = (currentBG - target) * conversion
 
             // more or less insulin because of bg trend in the last 15 minutes
-            fifteenMinInsulin = (deltaBG * conversion) / isf
+            fifteenMinInsulin = (deltaBG * conversion) / (isf * conversion)
 
             // determine whole COB for which we want to dose insulin for and then determine insulin for wholeCOB
             wholeCobInsulin = cob / carbRatio

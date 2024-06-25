@@ -300,13 +300,13 @@ final class BaseWatchManager: NSObject, WatchManager, Injectable {
         var insulinCalculated: Decimal = 0
         // insulin needed for the current blood glucose
         let targetDifference = (Decimal(bg) - target) * conversion
-        let targetDifferenceInsulin = targetDifference / isf
+        let targetDifferenceInsulin = targetDifference / (isf * conversion)
         // more or less insulin because of bg trend in the last 15 minutes
         var bgDelta: Int = 0
         if delta.count >= 3 {
             bgDelta = Int((delta.first?.glucose ?? 0) - delta[2].glucose)
         }
-        let fifteenMinInsulin = (Decimal(bgDelta) * conversion) / isf
+        let fifteenMinInsulin = (Decimal(bgDelta) * conversion) / (isf * conversion)
         // determine whole COB for which we want to dose insulin for and then determine insulin for wholeCOB
         let wholeCobInsulin = cob / carbratio
         // determine how much the calculator reduces/ increases the bolus because of IOB
