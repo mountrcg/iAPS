@@ -86,7 +86,7 @@ extension Suggestion {
         case ppISFratio = "pp_ISFratio"
         case acceISFratio = "acce_ISFratio"
         case autoISFratio = "auto_ISFratio"
-        case current_target = "target_bg"
+        case current_target
         case tick
         case SMBratio
         case insulin

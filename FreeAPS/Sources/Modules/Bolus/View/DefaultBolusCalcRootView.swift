@@ -301,14 +301,16 @@ extension Bolus {
                     }
                     HStack {
                         Text("Target Glucose").foregroundColor(.secondary)
-                        let target = state.target
+//                        let target = state.target
+                        let target = state.units == .mmolL ? state.target.asMmolL : state.target
                         Text(target.formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))))
                         Text(state.units.rawValue).foregroundColor(.secondary)
                     }
                     HStack {
                         Text("ISF").foregroundColor(.secondary)
-                        let isf = state.isf
-                        Text(isf.formatted())
+//                        let isf = state.isf
+                        let isf = state.units == .mmolL ? state.isf.asMmolL : state.isf
+                        Text(isf.formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))))
                         Text(state.units.rawValue + NSLocalizedString("/U", comment: "/Insulin unit"))
                             .foregroundColor(.secondary)
                     }

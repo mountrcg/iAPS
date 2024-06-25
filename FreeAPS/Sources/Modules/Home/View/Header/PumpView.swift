@@ -38,6 +38,18 @@ struct PumpView: View {
         return dateFormatter
     }
 
+    private var glucoseFormatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        if state.units == .mmolL {
+            formatter.minimumFractionDigits = 1
+            formatter.maximumFractionDigits = 1
+        }
+        formatter.roundingMode = .halfUp
+        return formatter
+    }
+
     var body: some View {
         HStack(alignment: .lastTextBaseline) {
 //            Text("COB").font(.caption2).foregroundColor(.secondary)
@@ -76,8 +88,10 @@ struct PumpView: View {
             Spacer()
 
             Text("ISF").font(.caption2).foregroundColor(.secondary)
+            let isf = state.units == .mmolL ? state.suggestion?.isf?.asMmolL : state.suggestion?.isf
             Text(
-                numberFormatter.string(from: (state.suggestion?.isf ?? 0) as NSNumber) ?? "0"
+                glucoseFormatter
+                    .string(from: (isf ?? 0) as NSNumber) ?? "0"
             )
             .font(.callout).fontWeight(.bold)
 

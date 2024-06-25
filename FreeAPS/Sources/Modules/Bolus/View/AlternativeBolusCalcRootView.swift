@@ -286,14 +286,16 @@ extension Bolus {
 
         var calcSettingsSecondRow: some View {
             GridRow {
+                let isf = state.units == .mmolL ? state.isf.asMmolL : state.isf
                 Text(state.carbRatio.formatted() + " " + NSLocalizedString("g/U", comment: " grams per Unit"))
                     .gridCellAnchor(.leading)
 
                 Text(
-                    state.isf.formatted() + " " + state.units
+                    isf.formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) + " " + state
+                        .units
                         .rawValue + NSLocalizedString("/U", comment: "/Insulin unit")
                 ).gridCellAnchor(.leading)
-                let target = state.target
+                let target = state.units == .mmolL ? state.target.asMmolL : state.target
                 Text(
                     target
                         .formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) +
@@ -305,7 +307,8 @@ extension Bolus {
         var calcGlucoseFirstRow: some View {
             GridRow(alignment: .center) {
                 let currentBG = state.currentBG
-                let target = state.target
+//                let target = state.target
+                let target = state.units == .mmolL ? state.target.asMmolL : state.target
 
                 Text("Glucose:").foregroundColor(.secondary)
 
@@ -335,6 +338,8 @@ extension Bolus {
         var calcGlucoseSecondRow: some View {
             GridRow(alignment: .center) {
                 let currentBG = state.currentBG
+                let isf = state.units == .mmolL ? state.isf.asMmolL : state.isf
+
                 Text(
                     currentBG
                         .formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits))) +
@@ -348,7 +353,7 @@ extension Bolus {
                             .precision(.fractionLength(fractionDigits))
                     )
                     + " / " +
-                    state.isf.formatted()
+                    isf.formatted(.number.grouping(.never).rounded().precision(.fractionLength(fractionDigits)))
                     + " ≈ " +
                     self.insulinRounder(state.targetDifferenceInsulin).formatted()
 
@@ -437,6 +442,8 @@ extension Bolus {
                 Text("Delta:").foregroundColor(.secondary)
 
                 let deltaBG = state.units == .mmolL ? state.deltaBG.asMmolL : state.deltaBG
+                let isf = state.units == .mmolL ? state.isf.asMmolL : state.isf
+
                 Text(
                     deltaBG
                         .formatted(
@@ -444,7 +451,7 @@ extension Bolus {
                                 .precision(.fractionLength(fractionDigits))
                         )
                         + " / " +
-                        state.isf.formatted()
+                        isf.formatted()
                         + " ≈ " +
                         self.insulinRounder(state.fifteenMinInsulin).formatted()
                 )
