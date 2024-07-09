@@ -35,10 +35,10 @@ extension Font {
     static let previewHeadline = Font.custom("PreviewHeadlineFont", size: 18)
     static let extraSmall = Font.custom("ExtraSmallFont", size: 12)
 
-    static let suggestionHeadline = Font.custom("SuggestionHeadlineFont", fixedSize: 20)
-    static let suggestionError = Font.custom("SuggestionErrorFone", fixedSize: 18)
-    static let suggestionParts = Font.custom("SuggestionPartsFont", fixedSize: 17)
-    static let suggestionSmallParts = Font.custom("SuggestionSmallPartsFont", fixedSize: 16)
+    static let suggestionHeadline = Font.custom("SuggestionHeadlineFont", fixedSize: 18)
+    static let suggestionError = Font.custom("SuggestionErrorFone", fixedSize: 16)
+    static let suggestionParts = Font.custom("SuggestionPartsFont", fixedSize: 13)
+    static let suggestionSmallParts = Font.custom("SuggestionSmallPartsFont", fixedSize: 12)
 
     static let glucoseFont = Font.custom("SuggestionSmallPartsFont", size: 45)
     static let glucoseSmallFont = Font.custom("SuggestionSmallPartsFont", size: 24)

@@ -810,27 +810,28 @@ extension Home {
 
         private var popup: some View {
             VStack(alignment: .leading, spacing: 4) {
-                Text(state.statusTitle).font(.headline).foregroundColor(.white)
+                Text(state.statusTitle).font(.suggestionHeadline).foregroundColor(.white)
                     .padding(.bottom, 4)
                 if let suggestion = state.suggestion {
                     TagCloudView(tags: suggestion.reasonParts).animation(.none, value: false)
 
-                    Text(suggestion.reasonConclusion.capitalizingFirstLetter()).font(.caption).foregroundColor(.white)
+                    Text(suggestion.reasonConclusion.capitalizingFirstLetter()).font(.suggestionParts)
+                        .foregroundColor(.white)
 
                 } else {
-                    Text("No sugestion found").font(.body).foregroundColor(.white)
+                    Text("No sugestion found").font(.suggestionHeadline).foregroundColor(.white)
                 }
 
                 if let errorMessage = state.errorMessage, let date = state.errorDate {
                     Text(NSLocalizedString("Error at", comment: "") + " " + dateFormatter.string(from: date))
                         .foregroundColor(.white)
-                        .font(.headline)
+                        .font(.suggestionError)
                         .padding(.bottom, 4)
                         .padding(.top, 8)
-                    Text(errorMessage).font(.caption).foregroundColor(.loopRed)
+                    Text(errorMessage).font(.buttonFont).foregroundColor(.loopRed)
                 } else if let suggestion = state.suggestion, (suggestion.bg ?? 100) == 400 {
-                    Text("Invalid CGM reading (HIGH).").font(.callout).bold().foregroundColor(.loopRed).padding(.top, 8)
-                    Text("SMBs and High Temps Disabled.").font(.caption).foregroundColor(.white).padding(.bottom, 4)
+                    Text("Invalid CGM reading (HIGH).").font(.suggestionError).bold().foregroundColor(.loopRed).padding(.top, 8)
+                    Text("SMBs and High Temps Disabled.").font(.suggestionParts).foregroundColor(.white).padding(.bottom, 4)
                 }
             }
         }

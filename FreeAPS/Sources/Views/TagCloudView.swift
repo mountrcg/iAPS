@@ -99,7 +99,7 @@ struct TagCloudView: View {
         return ZStack { Text(textTag)
             .padding(.vertical, 2)
             .padding(.horizontal, 4)
-            .font(.caption)
+            .font(.suggestionParts)
             .background(colorOfTag.opacity(0.8))
             .foregroundColor(Color.white)
             .cornerRadius(5) }
@@ -119,7 +119,7 @@ struct TagCloudView: View {
 struct TestTagCloudView: View {
     var body: some View {
         VStack {
-            Text("Header").font(.largeTitle)
+            Text("Header").font(.suggestionHeadline)
             TagCloudView(tags: ["Ninetendo", "XBox", "PlayStation", "PlayStation 2", "PlayStation 3", "PlayStation 4"])
             Text("Some other text")
             Divider()
