@@ -144,8 +144,8 @@ extension CGM {
                 .background(color)
                 .onAppear(perform: configureView)
                 .navigationTitle("CGM")
-                .navigationBarTitleDisplayMode(.inline)
-//                .navigationBarItems(leading: displayClose ? Button("Close", action: state.hideModal) : nil)
+                .navigationBarTitleDisplayMode(.automatic)
+                .navigationBarItems(leading: displayClose ? Button("Close", action: state.hideModal) : nil)
                 .sheet(isPresented: $setupCGM) {
                     if let cgmFetchManager = state.cgmManager,
                        let cgmManager = cgmFetchManager.cgmManager,
