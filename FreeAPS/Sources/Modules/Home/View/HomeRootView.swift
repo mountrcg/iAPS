@@ -665,15 +665,14 @@ extension Home {
             }
         }
 
-        @ViewBuilder func bolusProgressView(_: GeometryProxy, _ progress: Decimal) -> some View {
+        @ViewBuilder func bolusProgressView(_: GeometryProxy, _ progress: Decimal, _ amount: Decimal) -> some View {
             let colorRectangle: Color = colorScheme == .dark ? Color(
                 "Chart"
             ) : Color.white
 
             let colorIcon = (colorScheme == .dark ? Color.white : Color.black).opacity(0.9)
 
-            let bolusTotal = state.boluses.last?.amount ?? 0
-            let bolusFraction = progress * bolusTotal
+            let bolusFraction = progress * amount
 
             let bolusString =
                 (
@@ -682,7 +681,7 @@ extension Home {
                         "0"
                 )
                 + " of " +
-                (numberFormatter.string(from: bolusTotal as NSNumber) ?? "0")
+                (numberFormatter.string(from: amount as NSNumber) ?? "0")
                 + NSLocalizedString(" U", comment: "Insulin unit")
 
             ZStack(alignment: .bottom) {
@@ -761,8 +760,8 @@ extension Home {
 
                     ZStack(alignment: .bottom) {
                         legendPanel
-                        if let progress = state.bolusProgress {
-                            bolusProgressView(geo, progress)
+                        if let progress = state.bolusProgress, let amount = state.bolusAmount {
+                            bolusProgressView(geo, progress, amount)
                         }
                     }
 
