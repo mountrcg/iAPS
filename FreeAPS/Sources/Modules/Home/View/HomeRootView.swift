@@ -215,6 +215,8 @@ extension Home {
                 return nil
             }
             let targetSet = tempTarget.targetBottom ?? 0
+            let TTratio = state.enactedSuggestion?.autoISFratio ?? 1
+            var TTratioString = ", " + (tirFormatter.string(from: TTratio * 100 as NSNumber) ?? "") + "%"
             let target = state.suggestion?.current_target ?? 0
             let unitString = targetFormatter.string(from: target.asMmolL as NSNumber) ?? ""
             let rawString = (tirFormatter.string(from: target as NSNumber) ?? "") + " " + state.units
@@ -223,6 +225,7 @@ extension Home {
             var string = ""
             if sliderTTpresets.first?.active ?? false {
                 let hbt = sliderTTpresets.first?.hbt ?? 0
+                TTratioString = ""
                 string = ", " + (tirFormatter.string(from: state.infoPanelTTPercentage(hbt, target) as NSNumber) ?? "") + " %"
             }
 
@@ -231,7 +234,7 @@ extension Home {
             if targetSet < 80 {
                 percentString = percentString + "‼️"
             }
-            return tempTarget.displayName + " " + percentString
+            return tempTarget.displayName + " " + percentString + TTratioString
         }
 
         var overrideString: String? {

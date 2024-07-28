@@ -411,7 +411,10 @@ struct MainChartView: View {
             ForEach(0 ..< hours + hours, id: \.self) { hour in
                 // show every other label
                 if screenHours >= 12 && hour % 2 == 0 {
-                    Text(format.string(from: firstHourDate().addingTimeInterval(hour.hours.timeInterval)))
+                    Text(format.string(
+                        from: firstHourDate()
+                            .addingTimeInterval(hour.hours.timeInterval)
+                    ))
                         .font(.caption)
                         .position(
                             x: (
