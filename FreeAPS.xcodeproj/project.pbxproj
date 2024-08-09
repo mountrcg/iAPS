@@ -259,6 +259,7 @@
 		495068C32BDFF77C0048FF3B /* OverrideShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068C22BDFF77C0048FF3B /* OverrideShortcuts.swift */; };
 		495068C62BDFFCB80048FF3B /* BolusShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = 495068C52BDFFCB80048FF3B /* BolusShortcut.swift */; };
 		4963E5482A0D400700500170 /* autoISFTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4963E5472A0D400700500170 /* autoISFTableView.swift */; };
+		498357732CA697B400704F5D /* TDDChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 498357722CA697B400704F5D /* TDDChartView.swift */; };
 		49AF9A962B9A266700244FFE /* Configs.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49AF9A952B9A266700244FFE /* Configs.swift */; };
 		49CA5A042BD8E4AC001F0D3A /* B30ConfRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A032BD8E4AC001F0D3A /* B30ConfRootView.swift */; };
 		49CA5A062BD8E6AD001F0D3A /* BulletList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49CA5A052BD8E6AD001F0D3A /* BulletList.swift */; };
@@ -817,6 +818,7 @@
 		495068C22BDFF77C0048FF3B /* OverrideShortcuts.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OverrideShortcuts.swift; sourceTree = "<group>"; };
 		495068C52BDFFCB80048FF3B /* BolusShortcut.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BolusShortcut.swift; sourceTree = "<group>"; };
 		4963E5472A0D400700500170 /* autoISFTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = autoISFTableView.swift; sourceTree = "<group>"; };
+		498357722CA697B400704F5D /* TDDChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TDDChartView.swift; sourceTree = "<group>"; };
 		49AF9A952B9A266700244FFE /* Configs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Configs.swift; sourceTree = "<group>"; };
 		49CA5A032BD8E4AC001F0D3A /* B30ConfRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = B30ConfRootView.swift; sourceTree = "<group>"; };
 		49CA5A052BD8E6AD001F0D3A /* BulletList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletList.swift; sourceTree = "<group>"; };
@@ -1590,6 +1592,7 @@
 		3833B51E260264AC003021B3 /* Chart */ = {
 			isa = PBXGroup;
 			children = (
+				498357722CA697B400704F5D /* TDDChartView.swift */,
 				38AAF8702600C1B0004AF583 /* MainChartView.swift */,
 			);
 			path = Chart;
@@ -3033,6 +3036,7 @@
 				19B60B782B5E7E97002F4F74 /* Threshold.swift in Sources */,
 				CE7CA3582A064E2F004BE681 /* ListStateView.swift in Sources */,
 				193F6CDD2A512C8F001240FD /* Loops.swift in Sources */,
+				498357732CA697B400704F5D /* TDDChartView.swift in Sources */,
 				38B4F3CB25E502E200E76A18 /* WeakObjectSet.swift in Sources */,
 				38E989DD25F5021400C0CED0 /* PumpStatus.swift in Sources */,
 				BDFD165A2AE40438007F0DDA /* AlternativeBolusCalcRootView.swift in Sources */,
