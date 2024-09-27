@@ -143,7 +143,13 @@
     "Activate TempTarget Preset" : {
 
     },
+    "Activiating ${preset}" : {
+
+    },
     "Add Carbs" : {
+
+    },
+    "Adding ${carbQuantity} g at ${dateAdded}" : {
 
     },
     "Allow to add carbs" : {
@@ -493,6 +499,12 @@
           }
         }
       }
+    },
+    "Choose the Carb preset ${preset}" : {
+
+    },
+    "Choose the TempTarget  ${preset}" : {
+
     },
     "COB" : {
       "localizations" : {
@@ -919,6 +931,12 @@
         }
       }
     },
+    "Immediately activating ${preset}" : {
+
+    },
+    "Immediately adding ${carbQuantity} g at ${dateAdded}" : {
+
+    },
     "Immediately applying ${carbQuantity} g at ${dateAdded}" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -1000,6 +1018,9 @@
           }
         }
       }
+    },
+    "Immediatly starting ${target} ${unit} TempTarget for ${duration} min" : {
+
     },
     "IOB" : {
       "localizations" : {
@@ -1706,6 +1727,9 @@
           }
         }
       }
+    },
+    "Starting ${target} ${unit} TempTarget for ${duration} min" : {
+
     },
     "Starting Date" : {
       "extractionState" : "manual",
