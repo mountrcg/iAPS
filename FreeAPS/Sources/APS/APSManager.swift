@@ -41,6 +41,9 @@ enum APSError: LocalizedError {
     case apsError(message: String)
     case deviceSyncError(message: String)
     case manualBasalTemp(message: String)
+    case activeBolusViewBolus
+    case activeBolusViewBasal
+    case activeBolusViewBasalandBolus
 
     var errorDescription: String? {
         switch self {
@@ -56,6 +59,12 @@ enum APSError: LocalizedError {
             return "Sync error: \(message)"
         case let .manualBasalTemp(message):
             return "Manual Basal Temp : \(message)"
+        case .activeBolusViewBolus:
+            return "Suggested SMB not enacted while in Bolus View"
+        case .activeBolusViewBasal:
+            return "Suggested Temp Basal (when > 0) not enacted while in Bolus View"
+        case .activeBolusViewBasalandBolus:
+            return "Suggested Temp Basal (when > 0) and SMB not enacted while in Bolus View"
         }
     }
 }
@@ -1298,6 +1307,11 @@ final class BaseAPSManager: APSManager, Injectable {
                 try? self.coredataContext.save()
             }
         }
+    }
+
+    private func activeBolusView() -> Bool {
+        let defaults = UserDefaults.standard
+        return defaults.bool(forKey: IAPSconfig.inBolusView)
     }
 
     private func loopStats(loopStatRecord: LoopStats) {

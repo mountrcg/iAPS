@@ -92,14 +92,14 @@ struct AddShadow: ViewModifier {
     }
 }
 
-struct RaisedRectangle: View {
-    @Environment(\.colorScheme) var colorScheme
-    var body: some View {
-        Rectangle().fill(colorScheme == .dark ? .black : .white)
-            .frame(height: 1)
-            .addShadows()
-    }
-}
+// struct RaisedRectangle: View {
+//    @Environment(\.colorScheme) var colorScheme
+//    var body: some View {
+//        Rectangle().fill(colorScheme == .dark ? .black : .white)
+//            .frame(height: 1)
+//            .addShadows()
+//    }
+// }
 
 struct TestTube: View {
     let opacity: CGFloat

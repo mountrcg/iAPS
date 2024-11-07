@@ -90,6 +90,7 @@ final class CoreDataStorage {
         }
         return insulinDistribution
     }
+
     func insulinConcentration() -> (concentration: Double, increment: Double) {
         var conc = [InsulinConcentration]()
         coredataContext.performAndWait {

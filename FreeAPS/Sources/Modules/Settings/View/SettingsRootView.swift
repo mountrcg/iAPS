@@ -93,24 +93,22 @@ extension Settings {
                     Toggle("Debug options", isOn: $state.debugOptions)
                     if state.debugOptions {
                         Group {
-                            HStack {
-                                Text("NS Upload Profile and Settings")
-                                Button("Upload") { state.uploadProfileAndSettings(true) }
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                    .buttonStyle(.borderedProminent)
-                            }
-
-                            HStack {
-                                Text("Delete All NS Overrides")
-                                Button("Delete") { state.deleteOverrides() }
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                    .buttonStyle(.borderedProminent)
-                                    .tint(.red)
-                            } /*
-
-                            HStack {
-                                Toggle("Ignore flat CGM readings", isOn: $state.disableCGMError)
-                            }
+//                            HStack {
+//                                Text("NS Upload Profile and Settings")
+//                                Button("Upload") { state.uploadProfileAndSettings(true) }
+//                                    .frame(maxWidth: .infinity, alignment: .trailing)
+//                                    .buttonStyle(.borderedProminent)
+//                            }
+//                            HStack {
+//                                Text("Delete All NS Overrides")
+//                                Button("Delete") { state.deleteOverrides() }
+//                                    .frame(maxWidth: .infinity, alignment: .trailing)
+//                                    .buttonStyle(.borderedProminent)
+//                                    .tint(.red)
+//                            }
+//                            HStack {
+//                                Toggle("Ignore flat CGM readings", isOn: $state.disableCGMError)
+//                            }
 
                             HStack {
                                 Toggle("Allow diluted insulin concentration settings", isOn: $state.allowDilution)
