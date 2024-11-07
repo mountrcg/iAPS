@@ -38,6 +38,10 @@ struct PumpView: View {
         return dateFormatter
     }
 
+    @FetchRequest(
+        entity: InsulinConcentration.entity(), sortDescriptors: [NSSortDescriptor(key: "date", ascending: true)]
+    ) var concentration: FetchedResults<InsulinConcentration>
+
     private var glucoseFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal

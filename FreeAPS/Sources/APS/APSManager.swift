@@ -122,6 +122,10 @@ final class BaseAPSManager: APSManager, Injectable {
         set { settingsManager.settings = newValue }
     }
 
+    var concentration: (concentration: Double, increment: Double) {
+        CoreDataStorage().insulinConcentration()
+    }
+
     init(resolver: Resolver) {
         injectServices(resolver)
         openAPS = OpenAPS(storage: storage, nightscout: nightscout)
@@ -430,7 +434,7 @@ final class BaseAPSManager: APSManager, Injectable {
 
         guard let pump = pumpManager else { return }
 
-        let roundedAmout = pump.roundToSupportedBolusVolume(units: amount)
+        let roundedAmout = pump.roundToSupportedBolusVolume(units: amount / concentration.concentration)
 
         debug(.apsManager, "Enact bolus \(roundedAmout), manual \(!isSMB)")
 
@@ -451,7 +455,7 @@ final class BaseAPSManager: APSManager, Injectable {
                     self.determineBasal().sink { _ in }.store(in: &self.lifetime)
                 }
                 self.bolusProgress.send(0)
-                self.bolusAmount.send(Decimal(roundedAmout))
+                self.bolusAmount.send(Decimal(amount))
             }
         } receiveValue: { _ in }
             .store(in: &lifetime)
@@ -498,7 +502,12 @@ final class BaseAPSManager: APSManager, Injectable {
                 self.processError(APSError.pumpError(error))
             } else {
                 debug(.apsManager, "Temp Basal succeeded")
-                let temp = TempBasal(duration: Int(duration / 60), rate: Decimal(rate), temp: .absolute, timestamp: Date())
+                let temp = TempBasal(
+                    duration: Int(duration / 60),
+                    rate: Decimal(rate * self.concentration.concentration),
+                    temp: .absolute,
+                    timestamp: Date()
+                )
                 self.storage.save(temp, as: OpenAPS.Monitor.tempBasal)
                 if rate == 0, duration == 0 {
                     self.pumpHistoryStorage.saveCancelTempEvents()
@@ -539,13 +548,23 @@ final class BaseAPSManager: APSManager, Injectable {
 
         debug(.apsManager, "Start enact announcement: \(action)")
 
+        let insulinConcentration = concentration
+
         switch action {
         case let .bolus(amount):
             if let error = verifyStatus() {
                 processError(error)
                 return
             }
-            let roundedAmount = pump.roundToSupportedBolusVolume(units: Double(amount))
+
+            guard !activeBolusView() else {
+                debug(.apsManager, "Not enacting while in Bolus View")
+                processError(APSError.activeBolusViewBolus)
+                return
+            }
+
+            let roundedAmount = pump.roundToSupportedBolusVolume(units: Double(amount) / insulinConcentration.concentration)
+
             pump.enactBolus(units: roundedAmount, activationType: .manualRecommendationAccepted) { error in
                 if let error = error {
                     // warning(.apsManager, "Announcement Bolus failed with error: \(error.localizedDescription)")
@@ -565,7 +584,7 @@ final class BaseAPSManager: APSManager, Injectable {
                     )
                     self.announcementsStorage.storeAnnouncements([announcement], enacted: true)
                     self.bolusProgress.send(0)
-                    self.bolusAmount.send(Decimal(roundedAmount))
+                    self.bolusAmount.send(amount.roundBolus(increment: insulinConcentration.increment))
                 }
             }
         case let .pump(pumpAction):
@@ -615,15 +634,14 @@ final class BaseAPSManager: APSManager, Injectable {
             guard !settings.closedLoop else {
                 return
             }
-            let roundedRate = pump.roundToSupportedBasalRate(unitsPerHour: Double(rate))
+
+            let roundedRate = pump.roundToSupportedBasalRate(unitsPerHour: Double(rate) / insulinConcentration.concentration)
+
             pump.enactTempBasal(unitsPerHour: roundedRate, for: TimeInterval(duration) * 60) { error in
                 if let error = error {
                     warning(.apsManager, "Announcement TempBasal failed with error: \(error.localizedDescription)")
                 } else {
-                    debug(
-                        .apsManager,
-                        "Announcement TempBasal succeeded."
-                    )
+                    debug(.apsManager, "Announcement TempBasal succeeded.")
                     self.announcementsStorage.storeAnnouncements([announcement], enacted: true)
                 }
             }
@@ -735,6 +753,8 @@ final class BaseAPSManager: APSManager, Injectable {
                 .eraseToAnyPublisher()
         }
 
+        let insulinSetting = concentration
+
         let basalPublisher: AnyPublisher<Void, Error> = Deferred { () -> AnyPublisher<Void, Error> in
             if let error = self.verifyStatus() {
                 return Fail(error: error).eraseToAnyPublisher()
@@ -746,7 +766,19 @@ final class BaseAPSManager: APSManager, Injectable {
                 return Just(()).setFailureType(to: Error.self)
                     .eraseToAnyPublisher()
             }
-            return pump.enactTempBasal(unitsPerHour: Double(rate), for: TimeInterval(duration * 60)).map { _ in
+
+            guard !self.activeBolusView() || (self.activeBolusView() && rate == 0) else {
+                if let units = suggested.units {
+                    return Fail(error: APSError.activeBolusViewBasalandBolus).eraseToAnyPublisher()
+                }
+                return Fail(error: APSError.activeBolusViewBasal).eraseToAnyPublisher()
+            }
+
+            return pump.enactTempBasal(
+                unitsPerHour: Double(rate) / insulinSetting.concentration,
+                for: TimeInterval(duration * 60)
+            )
+            .map { _ in
                 let temp = TempBasal(duration: duration, rate: rate, temp: .absolute, timestamp: Date())
                 self.storage.save(temp, as: OpenAPS.Monitor.tempBasal)
                 return ()
@@ -764,7 +796,12 @@ final class BaseAPSManager: APSManager, Injectable {
                 return Just(()).setFailureType(to: Error.self)
                     .eraseToAnyPublisher()
             }
-            return pump.enactBolus(units: Double(units), automatic: true).map { _ in
+
+            guard !self.activeBolusView() else {
+                return Fail(error: APSError.activeBolusViewBolus).eraseToAnyPublisher()
+            }
+
+            return pump.enactBolus(units: Double(units) / insulinSetting.concentration, automatic: true).map { _ in
                 self.bolusProgress.send(0)
                 self.bolusAmount.send(units)
                 return ()

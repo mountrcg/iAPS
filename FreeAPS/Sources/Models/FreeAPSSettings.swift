@@ -62,6 +62,8 @@ struct FreeAPSSettings: JSON, Equatable {
     var allowBolusShortcut: Bool = false
     var allowedRemoteBolusAmount: Decimal = 0.0
     var lockScreenView: LockScreenView = .simple
+    var allowDilution: Bool = false
+    var hideInsulinBadge: Bool = false
 }
 
 extension FreeAPSSettings: Decodable {
@@ -313,6 +315,14 @@ extension FreeAPSSettings: Decodable {
 
         if let lockScreenView = try? container.decode(LockScreenView.self, forKey: .lockScreenView) {
             settings.lockScreenView = lockScreenView
+        }
+
+        if let hideInsulinBadge = try? container.decode(Bool.self, forKey: .hideInsulinBadge) {
+            settings.hideInsulinBadge = hideInsulinBadge
+        }
+
+        if let allowDilution = try? container.decode(Bool.self, forKey: .allowDilution) {
+            settings.allowDilution = allowDilution
         }
 
         self = settings
