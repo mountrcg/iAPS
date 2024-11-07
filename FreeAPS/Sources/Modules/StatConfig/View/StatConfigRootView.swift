@@ -54,7 +54,7 @@ extension StatConfig {
 
                 Section {
                     Toggle("Hide Concentration Badge", isOn: $state.hideInsulinBadge)
-                } header: { Text("Header settings") }
+                } header: { Text("Insulin Concentrations") }
 
                 Section {
                     HStack {

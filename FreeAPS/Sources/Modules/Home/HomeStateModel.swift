@@ -589,6 +589,7 @@ extension Home.StateModel:
         timeSettings = settingsManager.settings.timeSettings
         setupGlucose()
         setupOverrideHistory()
+        hideInsulinBadge = settingsManager.settings.hideInsulinBadge
     }
 
     func pumpHistoryDidUpdate(_: [PumpHistoryEvent]) {
