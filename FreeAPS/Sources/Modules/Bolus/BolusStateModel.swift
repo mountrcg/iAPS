@@ -285,6 +285,18 @@ extension Bolus {
             }
             return nil
         }
+
+        func notActive() {
+            let defaults = UserDefaults.standard
+            defaults.set(false, forKey: IAPSconfig.inBolusView)
+            // print("Active: NO") // For testing
+        }
+
+        func viewActive() {
+            let defaults = UserDefaults.standard
+            defaults.set(true, forKey: IAPSconfig.inBolusView)
+            // print("Active: YES") // For testing
+        }
     }
 }
 
@@ -294,5 +306,12 @@ extension Bolus.StateModel: SuggestionObserver {
             self.waitForSuggestion = false
         }
         setupInsulinRequired()
+    }
+}
+
+extension Decimal {
+    /// Account for increments
+    func roundBolus(increment: Double) -> Decimal {
+        Decimal(round(Double(self) / increment)) * Decimal(increment)
     }
 }

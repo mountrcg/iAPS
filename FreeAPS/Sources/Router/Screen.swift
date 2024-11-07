@@ -11,7 +11,7 @@ enum Screen: Identifiable, Hashable {
     case pumpConfig
     case pumpConfigDirect
     case pumpSettingsEditor
-    case basalProfileEditor
+    case basalProfileEditor(saveNewConcentration: Bool)
     case isfEditor
     case crEditor
     case targetsEditor
@@ -66,8 +66,8 @@ extension Screen {
             PumpConfig.RootView(resolver: resolver, displayClose: true)
         case .pumpSettingsEditor:
             PumpSettingsEditor.RootView(resolver: resolver)
-        case .basalProfileEditor:
-            BasalProfileEditor.RootView(resolver: resolver)
+        case let .basalProfileEditor(saveNewConcentration):
+            BasalProfileEditor.RootView(resolver: resolver, saveNewConcentration: saveNewConcentration)
         case .isfEditor:
             ISFEditor.RootView(resolver: resolver)
         case .crEditor:

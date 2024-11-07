@@ -78,6 +78,7 @@ extension Home {
         @Published var timeSettings: Bool = true
         @Published var calculatedTins: String = ""
         @Published var cgmAvailable: Bool = false
+        @Published var hideInsulinBadge: Bool = false
 
         private var numberFormatter: NumberFormatter {
             let formatter = NumberFormatter()
@@ -130,6 +131,7 @@ extension Home {
             hours = settingsManager.settings.hours
             alwaysUseColors = settingsManager.settings.alwaysUseColors
             timeSettings = settingsManager.settings.timeSettings
+            hideInsulinBadge = settingsManager.settings.hideInsulinBadge
 
             broadcaster.register(GlucoseObserver.self, observer: self)
             broadcaster.register(SuggestionObserver.self, observer: self)
@@ -587,6 +589,7 @@ extension Home.StateModel:
         timeSettings = settingsManager.settings.timeSettings
         setupGlucose()
         setupOverrideHistory()
+        hideInsulinBadge = settingsManager.settings.hideInsulinBadge
     }
 
     func pumpHistoryDidUpdate(_: [PumpHistoryEvent]) {

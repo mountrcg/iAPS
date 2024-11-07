@@ -38,6 +38,10 @@ struct PumpView: View {
         return dateFormatter
     }
 
+    @FetchRequest(
+        entity: InsulinConcentration.entity(), sortDescriptors: [NSSortDescriptor(key: "date", ascending: true)]
+    ) var concentration: FetchedResults<InsulinConcentration>
+
     private var glucoseFormatter: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -97,19 +101,22 @@ struct PumpView: View {
 
             Spacer()
 
-            if let reservoir = reservoir {
+            if let insulin = reservoir {
+                let reservoirThreshold = reservoirFormatter
+                    .string(from: (50 * Decimal(concentration.last?.concentration ?? 1)) as NSNumber) ?? ""
                 HStack {
                     Image(systemName: "drop.fill")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxHeight: 12)
                         .foregroundColor(reservoirColor)
-                    if reservoir == 0xDEAD_BEEF {
-                        Text("50+ " + NSLocalizedString("U", comment: "Insulin unit")).font(.callout).fontWeight(.bold)
+                    if insulin == 0xDEAD_BEEF {
+                        Text("\(reservoirThreshold)+ " + NSLocalizedString("U", comment: "Insulin unit")).font(.callout)
+                            .fontWeight(.bold)
                     } else {
                         Text(
                             reservoirFormatter
-                                .string(from: reservoir as NSNumber)! + NSLocalizedString(" U", comment: "Insulin unit")
+                                .string(from: (insulin * Decimal(concentration.last?.concentration ?? 1)) as NSNumber) ?? ""
                         )
                         .font(.callout).fontWeight(.bold)
                     }

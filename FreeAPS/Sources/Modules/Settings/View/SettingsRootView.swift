@@ -83,7 +83,7 @@ extension Settings {
 
                 Section {
                     Text("Pump Settings").navigationLink(to: .pumpSettingsEditor, from: self)
-                    Text("Basal Profile").navigationLink(to: .basalProfileEditor, from: self)
+                    Text("Basal Profile").navigationLink(to: .basalProfileEditor(saveNewConcentration: false), from: self)
                     Text("Insulin Sensitivities").navigationLink(to: .isfEditor, from: self)
                     Text("Carb Ratios").navigationLink(to: .crEditor, from: self)
                     Text("Target Glucose").navigationLink(to: .targetsEditor, from: self)
@@ -93,28 +93,26 @@ extension Settings {
                     Toggle("Debug options", isOn: $state.debugOptions)
                     if state.debugOptions {
                         Group {
+//                            HStack {
+//                                Text("NS Upload Profile and Settings")
+//                                Button("Upload") { state.uploadProfileAndSettings(true) }
+//                                    .frame(maxWidth: .infinity, alignment: .trailing)
+//                                    .buttonStyle(.borderedProminent)
+//                            }
+//                            HStack {
+//                                Text("Delete All NS Overrides")
+//                                Button("Delete") { state.deleteOverrides() }
+//                                    .frame(maxWidth: .infinity, alignment: .trailing)
+//                                    .buttonStyle(.borderedProminent)
+//                                    .tint(.red)
+//                            }
+//                            HStack {
+//                                Toggle("Ignore flat CGM readings", isOn: $state.disableCGMError)
+//                            }
+
                             HStack {
-                                Text("NS Upload Profile and Settings")
-                                Button("Upload") { state.uploadProfileAndSettings(true) }
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                    .buttonStyle(.borderedProminent)
+                                Toggle("Allow diluted insulin concentration settings", isOn: $state.allowDilution)
                             }
-
-                            HStack {
-                                Text("Delete All NS Overrides")
-                                Button("Delete") { state.deleteOverrides() }
-                                    .frame(maxWidth: .infinity, alignment: .trailing)
-                                    .buttonStyle(.borderedProminent)
-                                    .tint(.red)
-                            } /*
-
-                             HStack {
-                                 Text("Delete latest NS Override")
-                                 Button("Delete") { state.deleteOverride() }
-                                     .frame(maxWidth: .infinity, alignment: .trailing)
-                                     .buttonStyle(.borderedProminent)
-                                     .tint(.red)
-                             } */
                         }
                         Group {
                             Text("Preferences")

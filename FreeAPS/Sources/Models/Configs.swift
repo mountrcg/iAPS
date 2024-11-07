@@ -14,13 +14,17 @@ struct DateFilter {
 
 public enum IAPSconfig {
     static let padding: CGFloat = 60
-    static let iconSize: CGFloat = 20
+    static let iconSize: CGFloat = 34
     static let backgroundOpacity: Double = 0.1
     static let buttonSize: CGFloat = 26
     static let shadowOpacity: CGFloat = 0.75
     static let glassShadowOpacity: CGFloat = 0.6
     static let shadowFraction: CGFloat = 2
     static let minimumCarbEquivalent: Decimal = 0.6
+    static let id = "iAPS.identifier"
+    static let version = "iAPS.version"
+    static let newVersion = "iAPS.newVersion"
+    static let inBolusView = "iAPS.inBolusView"
 }
 
 extension Font {

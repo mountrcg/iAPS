@@ -129,6 +129,10 @@ extension Home {
                 )
         }
 
+        @FetchRequest(
+            entity: InsulinConcentration.entity(), sortDescriptors: [NSSortDescriptor(key: "date", ascending: true)]
+        ) var concentration: FetchedResults<InsulinConcentration>
+
         @ViewBuilder func header(_: GeometryProxy) -> some View {
             HStack {
                 Spacer()
@@ -710,26 +714,33 @@ extension Home {
         var body: some View {
             GeometryReader { geo in
                 VStack(spacing: 0) {
-                    ZStack(alignment: .bottomTrailing) {
+                    ZStack(alignment: .bottom) {
                         glucoseView
-                        if let eventualBG = state.eventualBG {
-                            Text(
-                                "⇢ " + targetFormatter.string(
-                                    from: (
-                                        state.units == .mmolL ? eventualBG
-                                            .asMmolL : Decimal(eventualBG)
-                                    ) as NSNumber
-                                )!
-                            )
-                            .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
-                            .offset(x: 45, y: 4)
-                        }
+                        HStack {
+                            if let lastConcentration = concentration.last?.concentration, lastConcentration != 1,
+                               !state.hideInsulinBadge
+                            {
+                                NonStandardInsulin(concentration: lastConcentration, pod: false)
+                            }
+                            Spacer()
+                            if let eventualBG = state.eventualBG {
+                                Text(
+                                    "⇢ " + targetFormatter.string(
+                                        from: (
+                                            state.units == .mmolL ? eventualBG
+                                                .asMmolL : Decimal(eventualBG)
+                                        ) as NSNumber
+                                    )!
+                                )
+                                .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
+                            }
+                        }.padding(.horizontal)
                     }.padding(.top, 10)
 
                     Spacer()
 
                     header(geo)
-                        .padding(.top, 15)
+//                        .padding(.top, 15)
                         .padding(.horizontal, 10)
 
                     Spacer()

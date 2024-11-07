@@ -37,6 +37,234 @@ struct CapsulaBackground: ViewModifier {
     }
 }
 
+struct CompactSectionSpacing: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 17, *) {
+            return content
+                .listSectionSpacing(.compact)
+        } else {
+            return content }
+    }
+}
+
+struct CarveOrDrop: ViewModifier {
+    let carve: Bool
+    func body(content: Content) -> some View {
+        if carve {
+            return content
+                .foregroundStyle(.shadow(.inner(color: .black, radius: 0.01, y: 1)))
+        } else {
+            return content
+                .foregroundStyle(.shadow(.drop(color: .black, radius: 0.02, y: 1)))
+        }
+    }
+}
+
+struct InfoPanelBackground: View {
+    let colorScheme: ColorScheme
+    var body: some View {
+        if #available(iOS 17.0, *) {
+            Rectangle()
+                .stroke(.gray, lineWidth: 2)
+                .fill(colorScheme == .light ? .white : .black)
+                .frame(height: 24)
+        } else {
+            Rectangle()
+                .strokeBorder(.gray, lineWidth: 2)
+                .background(Rectangle().fill(colorScheme == .light ? .white : .black))
+                .frame(height: 24)
+        }
+    }
+}
+
+struct AddShadow: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+    func body(content: Content) -> some View {
+        content
+            .shadow(
+                color: Color.black
+                    .opacity(
+                        colorScheme == .dark ? IAPSconfig.shadowOpacity : IAPSconfig.shadowOpacity / IAPSconfig
+                            .shadowFraction
+                    ),
+                radius: colorScheme == .dark ? 3 : 2.5
+            )
+    }
+}
+
+// struct RaisedRectangle: View {
+//    @Environment(\.colorScheme) var colorScheme
+//    var body: some View {
+//        Rectangle().fill(colorScheme == .dark ? .black : .white)
+//            .frame(height: 1)
+//            .addShadows()
+//    }
+// }
+
+struct TestTube: View {
+    let opacity: CGFloat
+    let amount: CGFloat
+    let colourOfSubstance: Color
+    let materialOpacity: CGFloat
+    @Environment(\.colorScheme) var colorScheme
+
+    var body: some View {
+        UnevenRoundedRectangle.testTube
+            .fill(
+                LinearGradient(
+                    gradient: Gradient(stops: [
+                        Gradient.Stop(color: .white.opacity(opacity), location: amount),
+                        Gradient.Stop(color: colourOfSubstance, location: amount)
+                    ]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .overlay {
+                FrostedGlass(opacity: materialOpacity)
+            }
+            .shadow(
+                color: Color.black
+                    .opacity(
+                        colorScheme == .dark ? IAPSconfig.glassShadowOpacity : IAPSconfig.glassShadowOpacity / IAPSconfig
+                            .shadowFraction
+                    ),
+                radius: colorScheme == .dark ? 2.2 : 3
+            )
+    }
+}
+
+struct FrostedGlass: View {
+    let opacity: CGFloat
+    var body: some View {
+        UnevenRoundedRectangle.testTube
+            .fill(.ultraThinMaterial.opacity(opacity))
+    }
+}
+
+struct ColouredRoundedBackground: View {
+    @Environment(\.colorScheme) var colorScheme
+    var body: some View {
+        Rectangle()
+            // RoundedRectangle(cornerRadius: 15)
+            .fill(
+                colorScheme == .dark ? .black :
+                    Color.white
+            )
+    }
+}
+
+struct ColouredBackground: View {
+    @Environment(\.colorScheme) var colorScheme
+    var body: some View {
+        Rectangle()
+            .fill(
+                colorScheme == .dark ? .black :
+                    Color.white
+            )
+    }
+}
+
+struct LoopEllipse: View {
+    @Environment(\.colorScheme) var colorScheme
+    let stroke: Color
+    var body: some View {
+        RoundedRectangle(cornerRadius: 15)
+            .stroke(stroke, lineWidth: colorScheme == .light ? 2 : 1)
+            .background(
+                RoundedRectangle(cornerRadius: 15)
+                    .fill(colorScheme == .light ? .white : .black)
+            )
+    }
+}
+
+struct TimeEllipse: View {
+    @Environment(\.colorScheme) var colorScheme
+    let characters: Int
+    var body: some View {
+        RoundedRectangle(cornerRadius: 15)
+            .fill(Color.gray).opacity(colorScheme == .light ? 0.2 : 0.2)
+            .frame(width: CGFloat(characters * 7), height: 25)
+    }
+}
+
+struct HeaderBackground: View {
+    @Environment(\.colorScheme) var colorScheme
+    var body: some View {
+        Rectangle()
+            .fill(
+                colorScheme == .light ? .gray.opacity(IAPSconfig.backgroundOpacity) : Color.header2.opacity(1)
+//                    Color(.systemGray5)
+            )
+    }
+}
+
+struct ClockOffset: View {
+    let mdtPump: Bool
+    var body: some View {
+        ZStack {
+            Image(systemName: "clock.fill")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(maxHeight: 20)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(Color(.warning))
+                .offset(x: 10, y: !mdtPump ? -20 : -13)
+        }
+    }
+}
+
+struct NonStandardInsulin: View {
+    let concentration: Double
+    let pod: Bool
+
+    private var formatter: NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        return formatter
+    }
+
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 20)
+                .fill(.red)
+                .frame(width: 40, height: 20)
+                .overlay {
+                    Text("U" + (formatter.string(from: concentration * 100 as NSNumber) ?? ""))
+                        .font(.system(size: 12))
+                        .foregroundStyle(.white)
+                }
+        }
+        .offset(x: pod ? -15 : -3, y: pod ? -24 : -4.5)
+    }
+}
+
+struct TooOldValue: View {
+    var body: some View {
+        ZStack {
+            Image(systemName: "circle.fill")
+                .resizable()
+                .frame(maxHeight: 20)
+                .symbolRenderingMode(.palette)
+                .foregroundStyle(Color(.warning).opacity(0.5))
+                .offset(x: 5, y: -13)
+                .overlay {
+                    Text("Old").font(.caption)
+                }
+        }
+    }
+}
+
+struct ChartBackground: ViewModifier {
+    @Environment(\.colorScheme) var colorScheme
+
+    func body(content: Content) -> some View {
+        content
+            .background(colorScheme == .light ? .gray.opacity(0.05) : .black).brightness(colorScheme == .dark ? 0.05 : 0)
+    }
+}
+
 private let navigationCache = LRUCache<Screen.ID, AnyView>(capacity: 10)
 
 struct NavigationLazyView: View {
@@ -145,4 +373,33 @@ extension View {
     }
 
     func asAny() -> AnyView { .init(self) }
+}
+
+extension UnevenRoundedRectangle {
+    static let testTube =
+        UnevenRoundedRectangle(
+            topLeadingRadius: 1.5,
+            bottomLeadingRadius: 50,
+            bottomTrailingRadius: 50,
+            topTrailingRadius: 1.5
+        )
+}
+
+extension UIImage {
+    /// Code suggested by Mamad Farrahi, but slightly modified.
+    func fillImageUpToPortion(color: Color, portion: Double) -> Image {
+        let rect = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+        UIGraphicsBeginImageContextWithOptions(size, false, scale)
+        draw(in: rect)
+        let context = UIGraphicsGetCurrentContext()!
+        context.setBlendMode(CGBlendMode.sourceIn)
+        context.setFillColor(color.cgColor ?? UIColor(.insulin.opacity(portion <= 3 ? 0.8 : 1)).cgColor)
+        let height: CGFloat = 1 - portion
+        let rectToFill = CGRect(x: 0, y: size.height * portion, width: size.width, height: size.height * height)
+        context.fill(rectToFill)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return Image(uiImage: newImage!)
+    }
 }
