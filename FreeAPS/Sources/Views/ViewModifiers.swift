@@ -227,12 +227,12 @@ struct NonStandardInsulin: View {
 
     var body: some View {
         ZStack {
-            RoundedRectangle(cornerRadius: 15)
+            RoundedRectangle(cornerRadius: 20)
                 .fill(.red)
-                .frame(width: 33, height: 15)
+                .frame(width: 40, height: 20)
                 .overlay {
                     Text("U" + (formatter.string(from: concentration * 100 as NSNumber) ?? ""))
-                        .font(.system(size: 9))
+                        .font(.system(size: 12))
                         .foregroundStyle(.white)
                 }
         }
