@@ -75,6 +75,18 @@ extension Home {
             return formatter
         }
 
+        private var glucoseFormatter: NumberFormatter {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 0
+            if state.units == .mmolL {
+                formatter.minimumFractionDigits = 1
+                formatter.maximumFractionDigits = 1
+            }
+            formatter.roundingMode = .halfUp
+            return formatter
+        }
+
         private var fetchedTargetFormatter: NumberFormatter {
             let formatter = NumberFormatter()
             formatter.numberStyle = .decimal
@@ -170,6 +182,17 @@ extension Home {
                 expiresAtDate: $state.pumpExpiresAtDate,
                 timerDate: $state.timerDate,
                 timeZone: $state.timeZone,
+//                pumpStatusHighlightMessage: $state.pumpStatusHighlightMessage,
+//                selectedDays: $state.avgDays,
+//                selectedEndDate: $state.tddEndDate,
+//                dailyTotalDoses: $state.dailyTotalDoses,
+//                averageTDD: state.averageTDD,
+                ytdTDDValue: state.ytdTDDValue,
+//                totalInsulinDisplayType: state.totalInsulinDisplayType,
+//                roundedTotalBolus: state.calculateTINS(),
+//                hours: state.hours,
+//                totalDaily: numberFormatter
+//                    .string(from: (state.determinationsFromPersistence.first?.totalDailyDose ?? 0) as NSNumber) ?? "0"
                 state: state
             )
             .onTapGesture {
@@ -391,22 +414,22 @@ extension Home {
         var timeInterval: some View {
             HStack(alignment: .center, spacing: 4) {
                 Spacer()
-                Group {
-                    Text("TDD").foregroundColor(.insulin)
-                    Text(numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0").foregroundColor(.primary)
-                }.font(.system(size: 12, weight: .bold))
-                Group {
-                    Text("ytd.").foregroundColor(.insulin).padding(.leading, 4)
-                    Text(numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
-                        .foregroundColor(.primary)
-//                    Text("Ø7d").foregroundColor(.insulin).padding(.leading, 4)
-//                    Text(numberFormatter.string(from: (state.suggestion?.tdd7d ?? 0) as NSNumber) ?? "0")
+//                Group {
+//                    Text("TDD").foregroundColor(.insulin)
+//                    Text(numberFormatter.string(from: (state.suggestion?.tdd ?? 0) as NSNumber) ?? "0").foregroundColor(.primary)
+//                }.font(.system(size: 12, weight: .bold))
+//                Group {
+//                    Text("ytd.").foregroundColor(.insulin).padding(.leading, 4)
+//                    Text(numberFormatter.string(from: (state.suggestion?.tddytd ?? 0) as NSNumber) ?? "0")
 //                        .foregroundColor(.primary)
-                }.font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
-                Text(" | ")
-                    .foregroundColor(.secondary)
-                    .font(.system(size: 12, weight: .light))
-                    .padding(.horizontal, 8)
+                ////                    Text("Ø7d").foregroundColor(.insulin).padding(.leading, 4)
+                ////                    Text(numberFormatter.string(from: (state.suggestion?.tdd7d ?? 0) as NSNumber) ?? "0")
+                ////                        .foregroundColor(.primary)
+//                }.font(.system(size: 12, weight: .regular)).foregroundColor(.insulin)
+//                Text(" | ")
+//                    .foregroundColor(.secondary)
+//                    .font(.system(size: 12, weight: .light))
+//                    .padding(.horizontal, 8)
                 ForEach(timeButtons) { button in
                     Text(button.active ? NSLocalizedString(button.label, comment: "") : button.number).onTapGesture {
                         state.hours = button.hours
@@ -435,12 +458,22 @@ extension Home {
         }
 
         var legendPanel: some View {
-            HStack(spacing: 0) {
+            HStack {
                 LeftLegend
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                loopView
-                    .frame(alignment: .center)
-                    .padding(.horizontal, 30)
+                Picker(selection: $state.hours, label: Text("Select Time Frame")) {
+                    ForEach(timeButtons) { button in
+                        Text(NSLocalizedString(button.label, comment: ""))
+                            .font(.system(size: 14)) // You can specify the size here
+                            .tag(button.hours)
+                    }
+                }
+                .pickerStyle(MenuPickerStyle())
+                .shadow(
+                    color: Color.black.opacity(colorScheme == .dark ? 0.75 : 0.33),
+                    radius: colorScheme == .dark ? 5 : 3
+                )
+                .padding(.horizontal, 10)
                 RightLegend
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
@@ -517,6 +550,156 @@ extension Home {
             for i in 0 ..< timeButtons.count {
                 timeButtons[i].active = timeButtons[i].hours == state.hours
             }
+        }
+
+        @ViewBuilder func rightHeaderPanel(_: GeometryProxy) -> some View {
+            VStack(alignment: .trailing, spacing: 15) {
+                HStack(spacing: 4) {
+                    Image(systemName: "arrow.up.arrow.down")
+                        .font(.system(size: 16))
+                        .foregroundColor(.loopGreen)
+                    let isf = state.units == .mmolL ? state.suggestion?.isf?.asMmolL : state.suggestion?.isf
+                    Text(
+                        glucoseFormatter
+                            .string(from: (isf ?? 0) as NSNumber) ?? "0"
+                    )
+                }
+
+                /// eventualBG string
+                if let eventualBG = state.eventualBG {
+                    HStack {
+                        Text(
+                            "⇢ " + targetFormatter.string(
+                                from: (
+                                    state.units == .mmolL ? eventualBG
+                                        .asMmolL : Decimal(eventualBG)
+                                ) as NSNumber
+                            )!
+                        )
+                        .font(.system(size: 16, weight: .bold)) }
+                } else {
+                    HStack {
+                        Text("⇢")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundColor(.secondary)
+                        Text("--")
+                    }
+                }
+                /// Loop view at bottomLeading
+                LoopView(
+                    suggestion: $state.suggestion,
+                    enactedSuggestion: $state.enactedSuggestion,
+                    closedLoop: $state.closedLoop,
+                    timerDate: $state.timerDate,
+                    isLooping: $state.isLooping,
+                    lastLoopDate: $state.lastLoopDate,
+                    manualTempBasal: $state.manualTempBasal
+                ).onTapGesture {
+                    state.isStatusPopupPresented.toggle()
+//                    setStatusTitle()
+                }.onLongPressGesture {
+                    let impactHeavy = UIImpactFeedbackGenerator(style: .heavy)
+                    impactHeavy.impactOccurred()
+                    state.runLoop()
+                }
+            }
+        }
+
+        @ViewBuilder func leftHeaderPanel(_: GeometryProxy) -> some View {
+            VStack(alignment: .leading, spacing: 15) {
+                HStack {
+                    Image(systemName: "drop.circle")
+                        .font(.system(size: 16))
+                        .foregroundColor(.insulin)
+                    Text(
+                        (
+                            numberFormatter
+                                .string(from: (state.suggestion?.iob ?? 0) as NSNumber) ?? "0"
+                        ) +
+                            NSLocalizedString(" U", comment: "Insulin unit")
+                    )
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                }
+                HStack {
+                    Image("premeal")
+                        .renderingMode(.template)
+                        .resizable()
+                        .frame(width: 15, height: 15)
+                        .foregroundColor(.loopYellow)
+                        .padding(.leading, 3)
+                    Text(
+                        (
+                            numberFormatter
+                                .string(from: (state.suggestion?.cob ?? 0) as NSNumber) ?? "0"
+                        ) +
+                            NSLocalizedString(" g", comment: "gram of carbs")
+                    )
+                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                }
+                HStack {
+                    if state.pumpSuspended {
+                        Text("Pump suspended")
+                            .font(.system(size: 12, weight: .bold, design: .rounded)).foregroundColor(.loopGray)
+                    } else if let tempBasalString = tempBasalString {
+                        Image(systemName: "chart.bar.xaxis")
+                            .font(.system(size: 16))
+                            .rotationEffect(Angle(degrees: 180))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [.insulinTintColor.opacity(0.9), .insulinTintColor.opacity(0.2)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                        Text(tempBasalString)
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                    } else {
+                        Image(systemName: "chart.bar.xaxis")
+                            .font(.system(size: 16))
+                            .rotationEffect(Angle(degrees: 180))
+                            .foregroundStyle(
+                                LinearGradient(
+                                    colors: [.insulinTintColor.opacity(0.9), .insulinTintColor.opacity(0.2)],
+                                    startPoint: .top,
+                                    endPoint: .bottom
+                                )
+                            )
+                        Text("No Data")
+                            .font(.system(size: 16, weight: .bold, design: .rounded))
+                    }
+                }
+//                if state.totalInsulinDisplayType == .totalDailyDose {
+//                    Spacer()
+//                    Text(
+//                        "TDD: " +
+//                            (
+//                                numberFormatter
+//                                    .string(from: (state.determinationsFromPersistence.first?.totalDailyDose ?? 0) as NSNumber) ??
+//                                    "0"
+//                            ) +
+//                            NSLocalizedString(" U", comment: "Insulin unit")
+//                    )
+//                    .font(.system(size: 16, weight: .bold, design: .rounded))
+//                } else {
+//                    Spacer()
+//                    HStack {
+//                        Text(
+//                            "TINS: \(state.roundedTotalBolus)" +
+//                                NSLocalizedString(" U", comment: "Unit in number of units delivered (keep the space character!)")
+//                        )
+//                        .font(.system(size: 16, weight: .bold, design: .rounded))
+//                        .onChange(of: state.hours) { _ in
+//                            state.roundedTotalBolus = state.calculateTINS()
+//                        }
+//                        .onAppear {
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//                                state.roundedTotalBolus = state.calculateTINS()
+//                            }
+//                        }
+//                    }
+//                }
+            }
+//            .padding(.horizontal, 10)
         }
 
         @ViewBuilder private func bottomPanel(_: GeometryProxy) -> some View {
@@ -714,27 +897,59 @@ extension Home {
         var body: some View {
             GeometryReader { geo in
                 VStack(spacing: 0) {
+//                    ZStack(alignment: .bottom) {
+//                        glucoseView
+//                        HStack {
+//                            if let lastConcentration = concentration.last?.concentration, lastConcentration != 1,
+//                               !state.hideInsulinBadge
+//                            {
+//                                NonStandardInsulin(concentration: lastConcentration, pod: false)
+//                            }
+//                            Spacer()
+//                            if let eventualBG = state.eventualBG {
+//                                Text(
+//                                    "⇢ " + targetFormatter.string(
+//                                        from: (
+//                                            state.units == .mmolL ? eventualBG
+//                                                .asMmolL : Decimal(eventualBG)
+//                                        ) as NSNumber
+//                                    )!
+//                                )
+//                                .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
+//                            }
+//                        }.padding(.horizontal)
+//                    }.padding(.top, 10)
+
                     ZStack(alignment: .bottom) {
-                        glucoseView
+                        /// left panel with pump related info
                         HStack {
-                            if let lastConcentration = concentration.last?.concentration, lastConcentration != 1,
-                               !state.hideInsulinBadge
-                            {
-                                NonStandardInsulin(concentration: lastConcentration, pod: false)
+                            VStack(alignment: .leading) {
+                                if let lastConcentration = concentration.last?.concentration, lastConcentration != 1,
+                                   !state.hideInsulinBadge
+                                {
+                                    HStack {
+                                        NonStandardInsulin(concentration: lastConcentration, pod: false)
+                                            .offset(x: 90)
+                                    }
+                                }
+                                leftHeaderPanel(geo)
                             }
                             Spacer()
-                            if let eventualBG = state.eventualBG {
-                                Text(
-                                    "⇢ " + targetFormatter.string(
-                                        from: (
-                                            state.units == .mmolL ? eventualBG
-                                                .asMmolL : Decimal(eventualBG)
-                                        ) as NSNumber
-                                    )!
-                                )
-                                .font(.system(size: 18, weight: .bold)).foregroundColor(.secondary)
-                            }
-                        }.padding(.horizontal)
+                        }
+                        .padding(.leading, 10).padding(.bottom, 10)
+                        HStack {
+                            Spacer()
+                            /// glucose bobble
+                            glucoseView
+                                .offset(x: 7.5)
+                            Spacer()
+                        }
+                        /// right panel with loop status and evBG
+                        HStack {
+                            Spacer()
+                            rightHeaderPanel(geo)
+                        }.padding(.trailing, 10).padding(.bottom, 10)
+
                     }.padding(.top, 10)
 
                     Spacer()
@@ -757,13 +972,13 @@ extension Home {
                             radius: colorScheme == .dark ? 5 : 3
                         )
                         .padding(.horizontal, 10)
-                        .frame(maxHeight: UIScreen.main.bounds.height / 2.2)
+                        .frame(maxHeight: UIScreen.main.bounds.height * 0.5)
 
                     Spacer()
 
-                    timeInterval
-
-                    Spacer()
+//                    timeInterval
+//
+//                    Spacer()
 
                     ZStack(alignment: .bottom) {
                         legendPanel

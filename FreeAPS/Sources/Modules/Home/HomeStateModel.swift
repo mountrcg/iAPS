@@ -656,4 +656,97 @@ extension Home.StateModel: PumpManagerOnboardingDelegate {
     func pumpManagerOnboarding(didPauseOnboarding _: PumpManagerUI) {
         // TODO:
     }
+    
+    // fetch yesterdays TDD ID
+    private func fetchYtdTotalDailyDoseID() async -> [NSManagedObjectID] {
+        let results = await CoreDataStack.shared.fetchEntitiesAsync(
+            ofType: DailyTDD.self,
+            onContext: context,
+            predicate: NSPredicate.ytdTDD,
+            key: "date",
+            ascending: false,
+            fetchLimit: 1,
+            propertiesToFetch: ["date", "totalDailyDose"]
+        )
+
+        guard let fetchedResults = results as? [DailyTDD] else { return [] }
+
+        return await context.perform {
+            fetchedResults.map(\.objectID) }
+    }
+
+    // fetch TDD IDs
+    private func fetchDailyTotalDosesIDs(forDays days: Int, endDate: Date) async -> [NSManagedObjectID] {
+        guard let startDate = Calendar.current.date(byAdding: .day, value: -days + 1, to: endDate),
+              let adjustedStartDate = calendar.date(bySettingHour: 12, minute: 0, second: 0, of: startDate)
+        else {
+            debug(.businessLogic, "CoreData TDD: not enough data to fetch over \(days) days!")
+            return []
+        }
+
+        let results = await CoreDataStack.shared.fetchEntitiesAsync(
+            ofType: DailyTDD.self,
+            onContext: context,
+            predicate: NSPredicate.previousTDDs(from: adjustedStartDate, to: endDate),
+            key: "date",
+            ascending: false,
+            fetchLimit: days,
+            propertiesToFetch: ["date", "totalDailyDose"]
+        )
+
+        guard let fetchedResults = results as? [DailyTDD] else { return [] }
+
+        return await context.perform {
+            fetchedResults.map(\.objectID) }
+    }
+
+    // Setup Daily TDDs
+    func setupTDDValues(forDays days: Int, endDate: Date) {
+        Task {
+            let dailyTDDs: [DailyTDD] = await CoreDataStack.shared
+                .getNSManagedObject(with: fetchDailyTotalDosesIDs(forDays: days, endDate: endDate), context: viewContext)
+
+            // Map the DailyTDD objects to the expected tuple (date, dose)
+            let dailyDoses = dailyTDDs.map { dailyTDD in
+                (date: dailyTDD.date ?? Date(), dose: dailyTDD.totalDailyDose ?? NSDecimalNumber.zero)
+            }
+            await updateDailyTotalDoses(with: dailyDoses)
+        }
+    }
+
+    @MainActor private func updateDailyTotalDoses(with dailyDoses: [(date: Date, dose: NSDecimalNumber)]) {
+        dailyTotalDoses = dailyDoses
+    }
+
+    private func calculateTDDValues() {
+        guard !dailyTotalDoses.isEmpty else {
+            averageTDD = .zero
+            ytdTDD = .zero
+            return
+        }
+
+        let totalSum = dailyTotalDoses.reduce(NSDecimalNumber.zero) { $0.adding($1.dose) }
+        let count = NSDecimalNumber(value: dailyTotalDoses.count)
+
+        averageTDD = totalSum.dividing(by: count).rounding(accordingToBehavior: NSDecimalNumberHandler(
+            roundingMode: .plain,
+            scale: 1,
+            raiseOnExactness: false,
+            raiseOnOverflow: false,
+            raiseOnUnderflow: false,
+            raiseOnDivideByZero: false
+        ))
+
+        // Fetch TDD for yesterday using the asynchronous method
+        Task {
+            let yesterdayTDD: [DailyTDD] = await CoreDataStack.shared
+                .getNSManagedObject(with: fetchYtdTotalDailyDoseID(), context: viewContext)
+            await MainActor.run {
+                ytdTDD = yesterdayTDD.first?.totalDailyDose ?? NSDecimalNumber.zero
+                debugPrint(
+                    "CoreData TDD: calculated avg\(avgDays)TDD with \(dailyTotalDoses.count) values before \(tddEndDate) at \(averageTDD), while ytdTDD was \(ytdTDD)."
+                )
+            }
+        }
+    }
 }

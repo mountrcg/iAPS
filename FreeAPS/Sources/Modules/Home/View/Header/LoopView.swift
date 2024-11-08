@@ -22,34 +22,30 @@ struct LoopView: View {
         return formatter
     }
 
-    private let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
+    private let rect = CGRect(x: 0, y: 0, width: 18, height: 18)
 
     var body: some View {
-        VStack(alignment: .center) {
+        HStack(alignment: .center) {
             ZStack {
                 if isLooping {
                     CircleProgress()
                 } else {
                     Circle()
-                        .strokeBorder(color, lineWidth: 5)
+                        .strokeBorder(color, lineWidth: 4)
                         .frame(width: rect.width, height: rect.height, alignment: .center)
                         .scaleEffect(1)
                         .mask(mask(in: rect).fill(style: FillStyle(eoFill: true)))
                 }
             }
-            if isLooping {
-                /* Text("looping").font(.caption2) */
-                Text(timeString).font(.caption2)
-                    .foregroundColor(.secondary)
-            } else if manualTempBasal {
-                Text("Manual").font(.caption2)
+            if manualTempBasal {
+                Text("Manual")
             } else if actualSuggestion?.timestamp != nil {
-                Text(timeString).font(.caption2)
-                    .foregroundColor(.secondary)
+                Text(timeString)
             } else {
-                Text("--").font(.caption2).foregroundColor(.secondary)
+                Text("--")
             }
         }
+        .font(.system(size: 16))
     }
 
     private var timeString: String {
@@ -102,7 +98,7 @@ struct CircleProgress: View {
     @State private var rotationAngle = 0.0
     @State private var pulse = false
 
-    private let rect = CGRect(x: 0, y: 0, width: 27, height: 27)
+    private let rect = CGRect(x: 0, y: 0, width: 18, height: 18) // Same dimensions as in LoopView
     private var backgroundGradient: AngularGradient {
         AngularGradient(
             gradient: Gradient(colors: [
@@ -122,18 +118,22 @@ struct CircleProgress: View {
         )
     }
 
-    let timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    let timer = Timer.publish(every: 0.03, on: .main, in: .common).autoconnect()
 
     var body: some View {
+        let rect = CGRect(x: 0, y: 0, width: 18, height: 18)
+
         ZStack {
             Circle()
                 .trim(from: 0, to: 1)
-                .stroke(backgroundGradient, style: StrokeStyle(lineWidth: pulse ? 10 : 5))
-                .scaleEffect(pulse ? 0.7 : 1)
+//                .stroke(backgroundGradient, style: StrokeStyle(lineWidth: 3))
+                .stroke(backgroundGradient, style: StrokeStyle(lineWidth: pulse ? 6 : 3.5))
+                .scaleEffect(pulse ? 0.5 : 1)
                 .animation(
                     Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true),
                     value: pulse
                 )
+                .frame(width: rect.width, height: rect.height, alignment: .center)
                 .onReceive(timer) { _ in
                     rotationAngle = (rotationAngle + 24).truncatingRemainder(dividingBy: 360)
                 }
@@ -141,7 +141,6 @@ struct CircleProgress: View {
                     self.pulse = true
                 }
         }
-        .frame(width: rect.width, height: rect.height, alignment: .center)
     }
 }
 
