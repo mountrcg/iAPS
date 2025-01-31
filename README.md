@@ -16,6 +16,9 @@ autoISF adjusts ISF depending on 4 different effects in glucose behaviour that a
 * delta_ISF and pp_ISF are factors derived from glucose rise, 5min, 10min and 45min deltas and postprandial time frames
 * dura_ISF is a factor derived from glucose being stuck at high levels
 
+![Bildschirmfoto 2025-01-31 um 13 40 11](https://github.com/user-attachments/assets/23126b09-f877-4b05-86e6-1b4244674b29)
+
+
 ## AIMI B30
 Another new feature is an enhanced EatingSoon TT on steroids. It is derived from AAPS AIMI branch and is called B30 (as in basal 30 minutes).
 B30 enables an increased basal rate after an EatingSoon TT and a manual bolus. The theory is to saturate the infusion site slowly & consistently with insulin to increase insulin absorption for SMB's following a meal with no carb counting. This of course makes no sense for users striving to go Full Closed Loop (FCL) with autoISF. But for those of you like me, who cannot use Lyumjev or FIASP this is a feature that might speed up your normal insulin and help you to not care about carb counting, using some pre-meal insulin and let autoISF handle the rest.
