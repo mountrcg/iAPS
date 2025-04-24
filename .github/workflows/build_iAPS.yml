@@ -4,12 +4,12 @@ on:
   workflow_dispatch:
 
   ## Remove the "#" sign from the beginning of the line below to get automated builds on push (code changes in your repository)
-  push:
+  #push:
 
   schedule:
-    #- cron: '30 04 1 * *' # Runs at 04:30 UTC on the 1st every month
-    - cron: '0 8 * * 3' # Checks for updates at 08:00 UTC every Wednesday
-    - cron: '0 6 1 * *' # Builds the app on the 1st of every month at 06:00 UTC
+    - cron: '30 04 */89 * *' # Runs at 04:30 UTC on the 1st every month
+    #- cron: '0 8 * * 3' # Checks for updates at 08:00 UTC every Wednesday
+    #- cron: '0 6 1 * *' # Builds the app on the 1st of every month at 06:00 UTC
 
 env:
   UPSTREAM_REPO: mountrcg/iAPS
@@ -104,12 +104,8 @@ jobs:
 
     # Keep repository "alive": add empty commits to ALIVE_BRANCH after "time_elapsed" days of inactivity to avoid inactivation of scheduled workflows
     - name: Keep alive
-      if: |
-        needs.check_alive_and_permissions.outputs.WORKFLOW_PERMISSION == 'true' &&
-        (vars.SCHEDULED_BUILD != 'false' || vars.SCHEDULED_SYNC != 'false')
-      uses: gautamkrishnar/keepalive-workflow@v1 # using the workflow with default settings
-      with:
-        time_elapsed: 20 # Time elapsed from the previous commit to trigger a new automated commit (in days)
+      run: |
+        echo "Keep Alive temporarily removed while gautamkrishnar/keepalive-workflow is not available"
 
     - name: Show scheduled build configuration message
       if: needs.check_alive_and_permissions.outputs.WORKFLOW_PERMISSION != 'true'
@@ -137,7 +133,7 @@ jobs:
         )
     steps:
       - name: Select Xcode version
-        run: "sudo xcode-select --switch /Applications/Xcode_15.3.app/Contents/Developer"
+          run: "sudo xcode-select --switch /Applications/Xcode_16.2.app/Contents/Developer"
       
       - name: Checkout Repo for syncing
         if: |
